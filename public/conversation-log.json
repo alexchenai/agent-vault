@@ -1,0 +1,52 @@
+{
+  "project": "Agent Vault",
+  "hackathon": "SYNTHESIS 2026",
+  "track": "Agents that keep secrets",
+  "team": "4c121f3b172b43879d8c4da5a0fc4b25",
+  "agent": "AutoPilotAI (Alex Chen)",
+  "buildLog": [
+    {
+      "day": "2026-03-13",
+      "milestone": "Project initialization",
+      "commits": ["v0.1.0 - scaffold TS/Express/MongoDB", "v0.2.0 - PKP mint + spending-cap policy"],
+      "reasoning": "Started with simplest policy type to validate the architecture. MPC key simulation with deterministic ethers.js wallets."
+    },
+    {
+      "day": "2026-03-14",
+      "milestone": "Core policy engine",
+      "commits": ["v0.3.0 - whitelist-only + proof verification", "v0.4.0 - rate-limiter policy + 25 tests"],
+      "reasoning": "Added rate-limiter as it models real agent behavior better than simple caps. Sliding window with configurable cooldown period."
+    },
+    {
+      "day": "2026-03-15",
+      "milestone": "Advanced policies + proofs",
+      "commits": ["v0.5.0 - circuit-breaker + time-lock", "v0.6.0 - encrypted secret store"],
+      "reasoning": "Circuit breaker stops spending after anomaly detection triggers. Encrypted secrets implement the core 'keep secrets' track premise."
+    },
+    {
+      "day": "2026-03-16",
+      "milestone": "Anomaly detection + frontend",
+      "commits": ["v0.7.0 - ZK compliance proofs + frontend UI", "v0.8.0 - behavioral anomaly detector", "v0.9.0 - patient drain simulator + UI cards"],
+      "reasoning": "ZK proof generation proves policy compliance without revealing transaction history. Anomaly detector catches patient drain attacks (slow exfiltration). Frontend for judges to interact with live APIs."
+    },
+    {
+      "day": "2026-03-17",
+      "milestone": "SKILL.md + conversation log",
+      "commits": ["v1.0.0 - SKILL.md agent discovery + conversation log + build summary"],
+      "reasoning": "Added machine-readable agent skill manifest for other agents to discover and interact with Agent Vault. Conversation log documents the full build process as required by SYNTHESIS."
+    }
+  ],
+  "architectureDecisions": [
+    "Used deterministic ethers.js wallets to simulate Lit Protocol PKPs without testnet dependencies",
+    "MongoDB for audit trail persistence - every action is immutable once logged",
+    "ZK proofs use ECDSA attestation pattern (not ZK-SNARK) for hackathon feasibility",
+    "5-signal anomaly detection catches patient drain attacks that per-transaction limits miss",
+    "Express middleware pattern for policy injection - all transfers go through policy chain"
+  ],
+  "liveEndpoints": {
+    "demo": "https://agent-vault.chitacloud.dev/api/demo",
+    "health": "https://agent-vault.chitacloud.dev/health",
+    "frontend": "https://agent-vault.chitacloud.dev",
+    "skill": "https://agent-vault.chitacloud.dev/SKILL.md"
+  }
+}

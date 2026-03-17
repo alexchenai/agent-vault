@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Vault - MPC Key Management for Autonomous Agents</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e0;line-height:1.6}
+.nav{background:#111;border-bottom:1px solid #1e1e2e;padding:14px 40px;display:flex;align-items:center;gap:16px}
+.nav .brand{color:#7c3aed;font-weight:800;font-size:1.2em}
+.nav .sub{color:#666;font-size:0.85em}
+.nav .badge{margin-left:auto;background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:4px 12px;border-radius:20px;font-size:0.78em}
+.hero{background:linear-gradient(135deg,#0a0a1e 0%,#120a1e 60%,#0a0a1e 100%);padding:60px 20px 50px;text-align:center;border-bottom:1px solid #1e1e2e}
+.hero h1{font-size:clamp(1.8em,4vw,2.8em);font-weight:800;margin-bottom:12px;color:#fff}
+.hero h1 span{color:#7c3aed}
+.hero p{color:#94a3b8;font-size:1.05em;max-width:580px;margin:0 auto 24px}
+.hero-badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.hero-badges span{background:#1e1e2e;border:1px solid #2a2a3e;color:#a78bfa;padding:5px 14px;border-radius:20px;font-size:0.82em}
+.container{max-width:1100px;margin:0 auto;padding:0 20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:40px 20px}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
+.card{background:#111;border:1px solid #1e1e2e;border-radius:16px;padding:28px}
+.card h2{font-size:1.1em;font-weight:700;margin-bottom:16px;color:#a78bfa}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:0.82em;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.field input,.field select{width:100%;background:#0a0a0f;border:1px solid #2a2a3e;border-radius:8px;padding:10px 14px;color:#e0e0e0;font-size:0.9em;outline:none;transition:.2s}
+.field input:focus,.field select:focus{border-color:#7c3aed;box-shadow:0 0 0 3px #7c3aed15}
+.btn{background:#7c3aed;color:#fff;border:none;padding:11px 22px;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9em;transition:.2s;width:100%;margin-top:4px}
+.btn:hover{background:#6d28d9}
+.btn.secondary{background:transparent;border:1px solid #7c3aed;color:#a78bfa}
+.output{background:#0a0a0f;border:1px solid #1e1e2e;border-radius:8px;padding:14px;font-family:monospace;font-size:0.82em;color:#94a3b8;min-height:60px;white-space:pre-wrap;word-break:break-all;margin-top:12px;max-height:200px;overflow-y:auto}
+.status{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.status.green{background:#00cc66}
+.status.yellow{background:#ffcc00}
+.status.red{background:#ff4444}
+.storage-badge{display:inline-block;background:#1e1e2e;border-radius:4px;padding:2px 8px;font-size:0.75em;color:#666;margin-left:8px}
+.section-title{padding:32px 20px 8px;font-size:0.82em;text-transform:uppercase;letter-spacing:1px;color:#444}
+.policies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:0 20px 40px}
+.policy-card{background:#111;border:1px solid #1e1e2e;border-radius:10px;padding:16px}
+.policy-card h3{font-size:0.9em;color:#a78bfa;margin-bottom:6px}
+.policy-card p{font-size:0.8em;color:#666}
+.log-entry{padding:8px 0;border-bottom:1px solid #1a1a2a;font-size:0.82em}
+.log-entry:last-child{border-bottom:none}
+.log-action{color:#a78bfa;font-weight:600}
+.log-time{color:#444;font-size:0.78em}
+.info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:20px}
+@media(max-width:600px){.info-grid{grid-template-columns:1fr}}
+.info-item{background:#111;border:1px solid #1e1e2e;border-radius:10px;padding:16px;text-align:center}
+.info-item .num{font-size:2em;font-weight:800;color:#7c3aed}
+.info-item .lbl{font-size:0.78em;color:#666;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="brand">Agent Vault</span>
+  <span class="sub">MPC Key Management for Autonomous Agents</span>
+  <span class="badge">SYNTHESIS 2026</span>
+</nav>
+
+<div class="hero">
+  <h1>Agents that <span>keep secrets</span></h1>
+  <p>Autonomous agents manage funds with Lit Protocol MPC-protected keys, enforceable spending policies, and verifiable compliance proofs.</p>
+  <div class="hero-badges">
+    <span>Lit Protocol Vincent SDK</span>
+    <span>Spending Policies</span>
+    <span>ZK Compliance Proofs</span>
+    <span>Audit Trail</span>
+    <span>Multi-sig Approval</span>
+  </div>
+  <div id="status-bar" style="font-size:0.82em;color:#666">Loading service status...</div>
+</div>
+
+<div class="container">
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="num" id="stat-vaults">-</div>
+      <div class="lbl">Vaults Created</div>
+    </div>
+    <div class="info-item">
+      <div class="num" id="stat-policies">-</div>
+      <div class="lbl">Policies Active</div>
+    </div>
+    <div class="info-item">
+      <div class="num" id="stat-proofs">-</div>
+      <div class="lbl">Proofs Generated</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-title container">Try the API</div>
+
+<div class="grid container">
+
+  <!-- Deposit -->
+  <div class="card">
+    <h2>Deposit Funds</h2>
+    <div class="field"><label>Vault ID</label><input id="dep-vault" placeholder="my-agent-vault-001" value="demo-vault"></div>
+    <div class="field"><label>Amount (ETH)</label><input id="dep-amount" type="number" placeholder="0.1" value="0.1" step="0.01"></div>
+    <div class="field"><label>Tx Hash (optional)</label><input id="dep-txhash" placeholder="0x..."></div>
+    <div class="field"><label>Memo (optional)</label><input id="dep-memo" placeholder="Initial deposit"></div>
+    <button class="btn" onclick="deposit()">Deposit</button>
+    <div class="output" id="dep-out">Result will appear here...</div>
+  </div>
+
+  <!-- Transfer -->
+  <div class="card">
+    <h2>Transfer (Policy Enforced)</h2>
+    <div class="field"><label>Vault ID</label><input id="tx-vault" placeholder="demo-vault" value="demo-vault"></div>
+    <div class="field"><label>To Address</label><input id="tx-to" placeholder="0x742d35Cc..."></div>
+    <div class="field"><label>Amount (ETH)</label><input id="tx-amount" type="number" placeholder="0.05" value="0.05" step="0.01"></div>
+    <div class="field"><label>Reason</label><input id="tx-reason" placeholder="Payment for services"></div>
+    <button class="btn" onclick="transfer()">Transfer</button>
+    <div class="output" id="tx-out">Policies will be evaluated before transfer...</div>
+  </div>
+
+  <!-- Policy Manager -->
+  <div class="card">
+    <h2>Policy Manager</h2>
+    <div class="field"><label>Vault ID</label><input id="pol-vault" placeholder="demo-vault" value="demo-vault"></div>
+    <div class="field">
+      <label>Policy Type</label>
+      <select id="pol-type">
+        <option value="spending-cap">Spending Cap (per-tx + daily limit)</option>
+        <option value="whitelist-only">Whitelist Only (approved addresses)</option>
+        <option value="rate-limiter">Rate Limiter (max N tx per window)</option>
+        <option value="time-lock">Time Lock (delay large transfers)</option>
+        <option value="multi-agent-approval">Multi-Agent Approval (M-of-N)</option>
+      </select>
+    </div>
+    <div class="field" id="pol-config-area">
+      <label>Config (JSON)</label>
+      <input id="pol-config" placeholder='{"maxPerTx": 1.0, "dailyLimit": 5.0}'>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="addPolicy()">Add Policy</button>
+      <button class="btn secondary" onclick="listPolicies()">List</button>
+    </div>
+    <div class="output" id="pol-out">Policy operations result...</div>
+  </div>
+
+  <!-- Compliance Proof -->
+  <div class="card">
+    <h2>Compliance Proof</h2>
+    <div class="field"><label>Vault ID</label><input id="proof-vault" placeholder="demo-vault" value="demo-vault"></div>
+    <div class="field"><label>Period (hours)</label><input id="proof-period" type="number" placeholder="24" value="24"></div>
+    <div class="field"><label>Auditor Address (optional)</label><input id="proof-auditor" placeholder="0x..."></div>
+    <button class="btn" onclick="generateProof()">Generate Proof</button>
+    <div class="output" id="proof-out">Proof will appear here...</div>
+  </div>
+
+  <!-- Balance & Audit Log -->
+  <div class="card">
+    <h2>Balance & Audit Log</h2>
+    <div class="field"><label>Vault ID</label><input id="audit-vault" placeholder="demo-vault" value="demo-vault"></div>
+    <button class="btn" onclick="getBalance()">Check Balance</button>
+    <button class="btn secondary" style="margin-top:8px" onclick="getAuditLog()">Get Audit Log</button>
+    <div class="output" id="audit-out">Balance and audit trail...</div>
+  </div>
+
+  <!-- Storage Info -->
+  <div class="card">
+    <h2>Service Info</h2>
+    <p style="color:#666;font-size:0.88em;margin-bottom:16px">Real-time information about this Agent Vault instance.</p>
+    <button class="btn secondary" onclick="getInfo()">Refresh Info</button>
+    <div class="output" id="info-out" style="margin-top:12px">Click Refresh Info...</div>
+  </div>
+
+</div>
+
+<div class="section-title container">Available Policies</div>
+<div class="policies-grid container">
+  <div class="policy-card">
+    <h3>Spending Cap</h3>
+    <p>Per-transaction and daily spending limits. Blocks transfers that exceed thresholds.</p>
+  </div>
+  <div class="policy-card">
+    <h3>Whitelist Only</h3>
+    <p>Restrict transfers to pre-approved addresses. All other destinations are rejected.</p>
+  </div>
+  <div class="policy-card">
+    <h3>Rate Limiter</h3>
+    <p>Maximum N transactions per time window. Prevents automated draining attacks.</p>
+  </div>
+  <div class="policy-card">
+    <h3>Time Lock</h3>
+    <p>Large transfers are queued for a delay period before execution. Human review window.</p>
+  </div>
+  <div class="policy-card">
+    <h3>Multi-Agent Approval</h3>
+    <p>M-of-N signatures required from approved agents before high-value transfers execute.</p>
+  </div>
+</div>
+
+<script>
+const BASE = '';
+
+async function api(method, path, body) {
+  const opts = { method, headers: {'Content-Type':'application/json'} };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(BASE + path, opts);
+  return r.json();
+}
+
+async function deposit() {
+  const out = document.getElementById('dep-out');
+  out.textContent = 'Processing...';
+  try {
+    const d = await api('POST', '/api/vault/deposit', {
+      vaultId: document.getElementById('dep-vault').value,
+      amount: parseFloat(document.getElementById('dep-amount').value),
+      txHash: document.getElementById('dep-txhash').value || undefined,
+      memo: document.getElementById('dep-memo').value || undefined
+    });
+    out.textContent = JSON.stringify(d, null, 2);
+    refreshStats();
+  } catch(e) { out.textContent = 'Error: ' + e.message; }
+}
+
+async function transfer() {
+  const out = document.getElementById('tx-out');
+  out.textContent = 'Evaluating policies...';
+  try {
+    const d = await api('POST', '/api/vault/transfer', {
+      vaultId: document.getElementById('tx-vault').value,
+      to: document.getElementById('tx-to').value || '0x742d35Cc6634C0532925a3b8D4C9C1F0E9E3c8F2',
+      amount: parseFloat(document.getElementById('tx-amount').value),
+      reason: document.getElementById('tx-reason').value || 'Demo transfer'
+    });
+    out.textContent = JSON.stringify(d, null, 2);
+  } catch(e) { out.textContent = 'Error: ' + e.message; }
+}
+
+async function addPolicy() {
+  const out = document.getElementById('pol-out');
+  out.textContent = 'Adding policy...';
+  const type = document.getElementById('pol-type').value;
+  let config = {};
+  try {
+    const raw = document.getElementById('pol-config').value;
+    if (raw) config = JSON.parse(raw);
+  } catch(e) {
+    if (type === 'spending-cap') config = {maxPerTx: 1.0, dailyLimit: 5.0};
+    else if (type === 'whitelist-only') config = {addresses: []};
+    else if (type === 'rate-limiter') config = {maxTx: 10, windowSeconds: 3600};
+    else if (type === 'time-lock') config = {thresholdEth: 1.0, delaySeconds: 300};
+    else if (type === 'multi-agent-approval') config = {required: 2, agents: []};
+  }
+  try {
+    const d = await api('POST', '/api/policies/' + document.getElementById('pol-vault').value, { type, config });
+    out.textContent = JSON.stringify(d, null, 2);
+  } catch(e) { out.textContent = 'Error: ' + e.message; }
+}
+
+async function listPolicies() {
+  const out = document.getElementById('pol-out');
+  out.textContent = 'Loading...';
+  try {
+    const d = await api('GET', '/api/policies/' + document.getElementById('pol-vault').value);
+    out.textContent = JSON.stringify(d, null, 2);
+  } catch(e) { out.textContent = 'Error: ' + e.message; }
+}
+
+async function generateProof() {
+  const out = document.getElementById('proof-out');
+  out.textContent = 'Generating compliance proof...';
+  try {
+    const d = await api('POST', '/api/proof/generate', {
+      vaultId: document.getElementById('proof-vault').value,
+      periodHours: parseInt(document.getElementById('proof-period').value) || 24,
+      auditorAddress: document.getElementById('proof-auditor').value || undefined
+    });
+    out.textContent = JSON.stringify(d, null, 2);
+    refreshStats();
+  } catch(e) { out.textContent = 'Error: ' + e.message; }
+}
+
+async function getBalance() {
+  const out = document.getElementById('audit-out');
+  out.textContent = 'Checking balance...';
+  try {
+    const d = await api('GET', '/api/vault/' + document.getElementById('audit-vault').value + '/balance');
+    out.textContent = JSON.stringify(d, null, 2);
+  } catch(e) { out.textContent = 'Error: ' + e.message; }
+}
+
+async function getAuditLog() {
+  const out = document.getElementById('audit-out');
+  out.textContent = 'Fetching audit log...';
+  try {
+    const d = await api('GET', '/api/vault/' + document.getElementById('audit-vault').value + '/audit-log?limit=10');
+    out.textContent = JSON.stringify(d, null, 2);
+  } catch(e) { out.textContent = 'Error: ' + e.message; }
+}
+
+async function getInfo() {
+  const out = document.getElementById('info-out');
+  try {
+    const d = await api('GET', '/info');
+    out.textContent = JSON.stringify(d, null, 2);
+  } catch(e) { out.textContent = 'Error: ' + e.message; }
+}
+
+async function refreshStats() {
+  try {
+    const d = await api('GET', '/api/stats');
+    if (d.vaults !== undefined) document.getElementById('stat-vaults').textContent = d.vaults;
+    if (d.policies !== undefined) document.getElementById('stat-policies').textContent = d.policies;
+    if (d.proofs !== undefined) document.getElementById('stat-proofs').textContent = d.proofs;
+  } catch(e) {}
+}
+
+// Init
+(async () => {
+  try {
+    const h = await api('GET', '/health');
+    const bar = document.getElementById('status-bar');
+    bar.innerHTML = '<span class="status green"></span>Service online — v' + h.version + ' | Storage: ' + (h.storage || 'checking...');
+    document.getElementById('stat-vaults').textContent = '0';
+    document.getElementById('stat-policies').textContent = '0';
+    document.getElementById('stat-proofs').textContent = '0';
+    await refreshStats();
+  } catch(e) {
+    document.getElementById('status-bar').innerHTML = '<span class="status red"></span>Service offline';
+  }
+})();
+</script>
+
+</body>
+</html>
