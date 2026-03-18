@@ -177,4 +177,4 @@ Behavioral anomaly detection: Patient drain attacks (spacing transactions 1 hour
 rate limiters) are detected via temporal pattern analysis. The vault can auto-trigger circuit
 breaker on anomalous activity.
 
-Current version: v1.0.0 | 38 tests | 0 failures | git: 0b5ae35
+Current version: v1.0.0 | 38 tests | 0 failures | git: c2fa1dc | Demo verified working: 2026-03-18T09:30 UTC (all 6 steps PASS)
