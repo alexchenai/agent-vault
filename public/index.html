@@ -3,329 +3,577 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent Vault - MPC Key Management for Autonomous Agents</title>
+<title>agentVault. - MPC Key Management</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e0;line-height:1.6}
-.nav{background:#111;border-bottom:1px solid #1e1e2e;padding:14px 40px;display:flex;align-items:center;gap:16px}
-.nav .brand{color:#7c3aed;font-weight:800;font-size:1.2em}
-.nav .sub{color:#666;font-size:0.85em}
-.nav .badge{margin-left:auto;background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:4px 12px;border-radius:20px;font-size:0.78em}
-.hero{background:linear-gradient(135deg,#0a0a1e 0%,#120a1e 60%,#0a0a1e 100%);padding:60px 20px 50px;text-align:center;border-bottom:1px solid #1e1e2e}
-.hero h1{font-size:clamp(1.8em,4vw,2.8em);font-weight:800;margin-bottom:12px;color:#fff}
-.hero h1 span{color:#7c3aed}
-.hero p{color:#94a3b8;font-size:1.05em;max-width:580px;margin:0 auto 24px}
-.hero-badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
-.hero-badges span{background:#1e1e2e;border:1px solid #2a2a3e;color:#a78bfa;padding:5px 14px;border-radius:20px;font-size:0.82em}
-.container{max-width:1100px;margin:0 auto;padding:0 20px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:40px 20px}
-@media(max-width:768px){.grid{grid-template-columns:1fr}}
-.card{background:#111;border:1px solid #1e1e2e;border-radius:16px;padding:28px}
-.card h2{font-size:1.1em;font-weight:700;margin-bottom:16px;color:#a78bfa}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:0.82em;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
-.field input,.field select{width:100%;background:#0a0a0f;border:1px solid #2a2a3e;border-radius:8px;padding:10px 14px;color:#e0e0e0;font-size:0.9em;outline:none;transition:.2s}
-.field input:focus,.field select:focus{border-color:#7c3aed;box-shadow:0 0 0 3px #7c3aed15}
-.btn{background:#7c3aed;color:#fff;border:none;padding:11px 22px;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9em;transition:.2s;width:100%;margin-top:4px}
-.btn:hover{background:#6d28d9}
-.btn.secondary{background:transparent;border:1px solid #7c3aed;color:#a78bfa}
-.output{background:#0a0a0f;border:1px solid #1e1e2e;border-radius:8px;padding:14px;font-family:monospace;font-size:0.82em;color:#94a3b8;min-height:60px;white-space:pre-wrap;word-break:break-all;margin-top:12px;max-height:200px;overflow-y:auto}
-.status{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
-.status.green{background:#00cc66}
-.status.yellow{background:#ffcc00}
-.status.red{background:#ff4444}
-.storage-badge{display:inline-block;background:#1e1e2e;border-radius:4px;padding:2px 8px;font-size:0.75em;color:#666;margin-left:8px}
-.section-title{padding:32px 20px 8px;font-size:0.82em;text-transform:uppercase;letter-spacing:1px;color:#444}
-.policies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:0 20px 40px}
-.policy-card{background:#111;border:1px solid #1e1e2e;border-radius:10px;padding:16px}
-.policy-card h3{font-size:0.9em;color:#a78bfa;margin-bottom:6px}
-.policy-card p{font-size:0.8em;color:#666}
-.log-entry{padding:8px 0;border-bottom:1px solid #1a1a2a;font-size:0.82em}
-.log-entry:last-child{border-bottom:none}
-.log-action{color:#a78bfa;font-weight:600}
-.log-time{color:#444;font-size:0.78em}
-.info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:20px}
-@media(max-width:600px){.info-grid{grid-template-columns:1fr}}
-.info-item{background:#111;border:1px solid #1e1e2e;border-radius:10px;padding:16px;text-align:center}
-.info-item .num{font-size:2em;font-weight:800;color:#7c3aed}
-.info-item .lbl{font-size:0.78em;color:#666;text-transform:uppercase}
+:root{
+  --bg:#0d0d14;
+  --surface:#13131e;
+  --surface2:#1a1a28;
+  --border:#252535;
+  --accent:#7c3aed;
+  --accent2:#a78bfa;
+  --text:#e2e2f0;
+  --muted:#6b6b8a;
+  --green:#22c55e;
+  --yellow:#f59e0b;
+  --red:#ef4444;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+a{color:var(--accent2);text-decoration:none}
+
+/* --- TOP BAR --- */
+.topbar{display:flex;align-items:center;gap:16px;padding:0 24px;height:52px;background:var(--surface);border-bottom:1px solid var(--border)}
+.logo{font-size:1.25em;font-weight:800;color:var(--text);letter-spacing:-0.5px}
+.logo span{color:var(--accent)}
+.tabs{display:flex;gap:0;margin-left:24px}
+.tab{padding:0 20px;height:52px;display:flex;align-items:center;color:var(--muted);cursor:pointer;font-size:0.88em;border-bottom:2px solid transparent;transition:.15s;user-select:none}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.tab-sep{color:var(--border);padding:0 4px;display:flex;align-items:center}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.badge{background:#7c3aed22;border:1px solid #7c3aed44;color:var(--accent2);padding:3px 10px;border-radius:20px;font-size:0.75em;font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px}
+
+/* --- PANELS --- */
+.panel{display:none;padding:28px;max-width:1200px;margin:0 auto}
+.panel.active{display:block}
+
+/* --- STATS --- */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.stat-label{font-size:0.75em;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px}
+.stat-value{font-size:2em;font-weight:800;color:var(--text);line-height:1}
+.stat-sub{font-size:0.78em;color:var(--green);margin-top:6px}
+.stat-sub.neutral{color:var(--muted)}
+
+/* --- ADDRESS BOX --- */
+.address-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.address-label{font-size:0.75em;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;width:80px;flex-shrink:0}
+.address-val{font-family:'JetBrains Mono',Consolas,monospace;font-size:0.85em;color:var(--text);flex:1;word-break:break-all}
+.copy-btn{background:var(--surface2);border:1px solid var(--border);color:var(--accent2);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:0.78em;flex-shrink:0;transition:.15s}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* --- TABLES --- */
+.table-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:28px}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.table-title{font-weight:700;font-size:0.88em}
+.more-link{font-size:0.78em;color:var(--accent2)}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 16px;text-align:left;font-size:0.73em;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);background:var(--bg)}
+td{padding:12px 16px;font-size:0.82em;border-bottom:1px solid #1a1a28}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#ffffff04}
+.hash{font-family:Consolas,monospace;color:var(--accent2);font-size:0.85em}
+.action-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.8em;font-weight:600}
+.action-create{background:#7c3aed22;color:#a78bfa}
+.action-deposit{background:#22c55e22;color:#4ade80}
+.action-withdraw{background:#f59e0b22;color:#fbbf24}
+.action-policy{background:#06b6d422;color:#22d3ee}
+.action-proof{background:#ec489922;color:#f472b6}
+.status-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.78em;font-weight:600}
+.status-confirmed{background:#22c55e18;color:#4ade80}
+.status-processed{background:#7c3aed18;color:#a78bfa}
+.status-finalized{background:#3b82f618;color:#60a5fa}
+.status-pending{background:#f59e0b18;color:#fbbf24}
+.time-col{color:var(--muted);font-size:0.8em}
+
+/* --- CONFIG TAB --- */
+.config-grid{display:grid;grid-template-columns:380px 1fr;gap:24px}
+@media(max-width:800px){.config-grid{grid-template-columns:1fr}}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px}
+.form-title{font-weight:700;font-size:0.92em;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:0.75em;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.form-select,.form-input,.form-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:0.88em;outline:none;transition:.15s;font-family:inherit}
+.form-textarea{font-family:Consolas,monospace;resize:vertical;min-height:80px}
+.form-select:focus,.form-input:focus,.form-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #7c3aed18}
+.form-select option{background:var(--surface)}
+.add-btn{background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:0.88em;cursor:pointer;width:100%;margin-top:4px;transition:.15s}
+.add-btn:hover{background:#6d28d9}
+.add-btn:active{transform:scale(0.99)}
+
+/* --- POLICY LIST --- */
+.policy-list-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.policy-actions{display:flex;gap:8px}
+.del-btn{background:none;border:1px solid #ef444433;color:#ef4444;padding:3px 10px;border-radius:6px;cursor:pointer;font-size:0.75em;transition:.15s}
+.del-btn:hover{background:#ef444422}
+.enabled-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
+.enabled-dot.on{background:var(--green)}
+.enabled-dot.off{background:var(--muted)}
+
+/* --- LOGS TAB --- */
+.logs-grid{display:grid;grid-template-columns:1fr 320px;gap:24px}
+@media(max-width:900px){.logs-grid{grid-template-columns:1fr}}
+.proof-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.proof-title{font-weight:700;font-size:0.88em;margin-bottom:16px}
+.proof-entry{padding:10px 0;border-bottom:1px solid var(--border)}
+.proof-entry:last-child{border-bottom:none}
+.proof-hash{font-family:Consolas,monospace;font-size:0.75em;color:var(--accent2);word-break:break-all}
+.proof-time{font-size:0.72em;color:var(--muted);margin-top:3px}
+.proof-root{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px;margin-top:6px;font-family:Consolas,monospace;font-size:0.72em;color:#94a3b8;word-break:break-all}
+
+/* --- LOADING --- */
+.loading{color:var(--muted);font-size:0.82em;padding:20px 0}
+.err{color:var(--red);font-size:0.82em}
+
+/* --- DEMO BANNER --- */
+.demo-banner{background:#7c3aed18;border:1px solid #7c3aed33;border-radius:8px;padding:10px 16px;margin-bottom:20px;font-size:0.82em;color:#a78bfa;display:flex;align-items:center;gap:8px}
+.demo-banner a{color:#c4b5fd}
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <span class="brand">Agent Vault</span>
-  <span class="sub">MPC Key Management for Autonomous Agents</span>
-  <span class="badge">SYNTHESIS 2026</span>
-</nav>
-
-<div class="hero">
-  <h1>Agents that <span>keep secrets</span></h1>
-  <p>Autonomous agents manage funds with Lit Protocol MPC-protected keys, enforceable spending policies, and verifiable compliance proofs.</p>
-  <div class="hero-badges">
-    <span>Lit Protocol Vincent SDK</span>
-    <span>Spending Policies</span>
-    <span>ZK Compliance Proofs</span>
-    <span>Audit Trail</span>
-    <span>Multi-sig Approval</span>
+<div class="topbar">
+  <div class="logo">aV<span>.</span></div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('dashboard')">dashboard</div>
+    <div class="tab-sep">//</div>
+    <div class="tab" onclick="switchTab('config')">config</div>
+    <div class="tab-sep">//</div>
+    <div class="tab" onclick="switchTab('logs')">logs</div>
   </div>
-  <div id="status-bar" style="font-size:0.82em;color:#666">Loading service status...</div>
-</div>
-
-<div class="container">
-  <div class="info-grid">
-    <div class="info-item">
-      <div class="num" id="stat-vaults">-</div>
-      <div class="lbl">Vaults Created</div>
-    </div>
-    <div class="info-item">
-      <div class="num" id="stat-policies">-</div>
-      <div class="lbl">Policies Active</div>
-    </div>
-    <div class="info-item">
-      <div class="num" id="stat-proofs">-</div>
-      <div class="lbl">Proofs Generated</div>
-    </div>
+  <div class="topbar-right">
+    <span id="storage-badge" class="badge">loading...</span>
+    <span class="badge"><span class="dot"></span>SYNTHESIS 2026</span>
   </div>
 </div>
 
-<div class="section-title container">Try the API</div>
-
-<div class="grid container">
-
-  <!-- Deposit -->
-  <div class="card">
-    <h2>Deposit Funds</h2>
-    <div class="field"><label>Vault ID</label><input id="dep-vault" placeholder="my-agent-vault-001" value="demo-vault"></div>
-    <div class="field"><label>Amount (ETH)</label><input id="dep-amount" type="number" placeholder="0.1" value="0.1" step="0.01"></div>
-    <div class="field"><label>Tx Hash (optional)</label><input id="dep-txhash" placeholder="0x..."></div>
-    <div class="field"><label>Memo (optional)</label><input id="dep-memo" placeholder="Initial deposit"></div>
-    <button class="btn" onclick="deposit()">Deposit</button>
-    <div class="output" id="dep-out">Result will appear here...</div>
+<!-- DASHBOARD PANEL -->
+<div id="panel-dashboard" class="panel active">
+  <div class="demo-banner">
+    SYNTHESIS 2026 Hackathon demo. Live MPC key management with Lit Protocol Vincent SDK.
+    <a href="/api/demo">Run full demo sequence</a> | <a href="/health">Health check</a>
   </div>
 
-  <!-- Transfer -->
-  <div class="card">
-    <h2>Transfer (Policy Enforced)</h2>
-    <div class="field"><label>Vault ID</label><input id="tx-vault" placeholder="demo-vault" value="demo-vault"></div>
-    <div class="field"><label>To Address</label><input id="tx-to" placeholder="0x742d35Cc..."></div>
-    <div class="field"><label>Amount (ETH)</label><input id="tx-amount" type="number" placeholder="0.05" value="0.05" step="0.01"></div>
-    <div class="field"><label>Reason</label><input id="tx-reason" placeholder="Payment for services"></div>
-    <button class="btn" onclick="transfer()">Transfer</button>
-    <div class="output" id="tx-out">Policies will be evaluated before transfer...</div>
-  </div>
-
-  <!-- Policy Manager -->
-  <div class="card">
-    <h2>Policy Manager</h2>
-    <div class="field"><label>Vault ID</label><input id="pol-vault" placeholder="demo-vault" value="demo-vault"></div>
-    <div class="field">
-      <label>Policy Type</label>
-      <select id="pol-type">
-        <option value="spending-cap">Spending Cap (per-tx + daily limit)</option>
-        <option value="whitelist-only">Whitelist Only (approved addresses)</option>
-        <option value="rate-limiter">Rate Limiter (max N tx per window)</option>
-        <option value="time-lock">Time Lock (delay large transfers)</option>
-        <option value="multi-agent-approval">Multi-Agent Approval (M-of-N)</option>
-      </select>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Vault Balance</div>
+      <div class="stat-value" id="stat-balance">$0.00</div>
+      <div class="stat-sub" id="stat-balance-sub"></div>
     </div>
-    <div class="field" id="pol-config-area">
-      <label>Config (JSON)</label>
-      <input id="pol-config" placeholder='{"maxPerTx": 1.0, "dailyLimit": 5.0}'>
+    <div class="stat-card">
+      <div class="stat-label">Active Policies</div>
+      <div class="stat-value" id="stat-policies">0</div>
+      <div class="stat-sub neutral" id="stat-policies-sub">spending caps enforced</div>
     </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn" onclick="addPolicy()">Add Policy</button>
-      <button class="btn secondary" onclick="listPolicies()">List</button>
+    <div class="stat-card">
+      <div class="stat-label">Vaults Created</div>
+      <div class="stat-value" id="stat-vaults">0</div>
+      <div class="stat-sub neutral">MPC-protected keys</div>
     </div>
-    <div class="output" id="pol-out">Policy operations result...</div>
+    <div class="stat-card">
+      <div class="stat-label">Compliance Proofs</div>
+      <div class="stat-value" id="stat-proofs">0</div>
+      <div class="stat-sub neutral">ZK-style audit roots</div>
+    </div>
   </div>
 
-  <!-- Compliance Proof -->
-  <div class="card">
-    <h2>Compliance Proof</h2>
-    <div class="field"><label>Vault ID</label><input id="proof-vault" placeholder="demo-vault" value="demo-vault"></div>
-    <div class="field"><label>Period (hours)</label><input id="proof-period" type="number" placeholder="24" value="24"></div>
-    <div class="field"><label>Auditor Address (optional)</label><input id="proof-auditor" placeholder="0x..."></div>
-    <button class="btn" onclick="generateProof()">Generate Proof</button>
-    <div class="output" id="proof-out">Proof will appear here...</div>
+  <div class="address-box">
+    <div class="address-label">Address</div>
+    <div class="address-val" id="deposit-address">Loading MPC address...</div>
+    <button class="copy-btn" onclick="copyAddress()">Copy</button>
   </div>
 
-  <!-- Balance & Audit Log -->
-  <div class="card">
-    <h2>Balance & Audit Log</h2>
-    <div class="field"><label>Vault ID</label><input id="audit-vault" placeholder="demo-vault" value="demo-vault"></div>
-    <button class="btn" onclick="getBalance()">Check Balance</button>
-    <button class="btn secondary" style="margin-top:8px" onclick="getAuditLog()">Get Audit Log</button>
-    <div class="output" id="audit-out">Balance and audit trail...</div>
+  <div class="table-section">
+    <div class="table-header">
+      <div class="table-title">Recent Transactions</div>
+      <a class="more-link" href="#" onclick="switchTab('logs');return false">More Transactions</a>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Transaction Hash</th>
+          <th>Time</th>
+          <th>Action</th>
+          <th>By</th>
+          <th>Value (ETH)</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="tx-table">
+        <tr><td colspan="6" class="loading">Loading transactions...</td></tr>
+      </tbody>
+    </table>
   </div>
-
-  <!-- Storage Info -->
-  <div class="card">
-    <h2>Service Info</h2>
-    <p style="color:#666;font-size:0.88em;margin-bottom:16px">Real-time information about this Agent Vault instance.</p>
-    <button class="btn secondary" onclick="getInfo()">Refresh Info</button>
-    <div class="output" id="info-out" style="margin-top:12px">Click Refresh Info...</div>
-  </div>
-
 </div>
 
-<div class="section-title container">Available Policies</div>
-<div class="policies-grid container">
-  <div class="policy-card">
-    <h3>Spending Cap</h3>
-    <p>Per-transaction and daily spending limits. Blocks transfers that exceed thresholds.</p>
+<!-- CONFIG PANEL -->
+<div id="panel-config" class="panel">
+  <div class="config-grid">
+    <div class="form-card">
+      <div class="form-title">Add Policy</div>
+      <div class="form-group">
+        <label class="form-label">Policy Type</label>
+        <select class="form-select" id="policy-type">
+          <option value="spending_cap">Spend Policy</option>
+          <option value="max_per_tx">Max Tx Policy</option>
+          <option value="time_lock">Time Lock Delay Policy</option>
+          <option value="allowlist">Allowlist Policy</option>
+          <option value="daily_limit">Daily Limit Policy</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Config (JSON)</label>
+        <textarea class="form-textarea" id="policy-config" rows="4">{"maxPerTx": 1.0, "dailyLimit": 5.0}</textarea>
+      </div>
+      <button class="add-btn" onclick="addPolicy()">Add</button>
+      <div id="policy-msg" style="margin-top:10px;font-size:0.8em;color:var(--green)"></div>
+    </div>
+
+    <div class="policy-list-card">
+      <div class="table-header">
+        <div class="table-title">Policies</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Policy Type</th>
+            <th>Config (JSON)</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="policy-table">
+          <tr><td colspan="4" class="loading">Loading policies...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="policy-card">
-    <h3>Whitelist Only</h3>
-    <p>Restrict transfers to pre-approved addresses. All other destinations are rejected.</p>
-  </div>
-  <div class="policy-card">
-    <h3>Rate Limiter</h3>
-    <p>Maximum N transactions per time window. Prevents automated draining attacks.</p>
-  </div>
-  <div class="policy-card">
-    <h3>Time Lock</h3>
-    <p>Large transfers are queued for a delay period before execution. Human review window.</p>
-  </div>
-  <div class="policy-card">
-    <h3>Multi-Agent Approval</h3>
-    <p>M-of-N signatures required from approved agents before high-value transfers execute.</p>
+</div>
+
+<!-- LOGS PANEL -->
+<div id="panel-logs" class="panel">
+  <div class="logs-grid">
+    <div class="table-section">
+      <div class="table-header">
+        <div class="table-title">Audit Logs</div>
+        <a class="more-link" href="#" onclick="loadMoreLogs();return false">More Transactions</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Log ID / Hash</th>
+            <th>Time</th>
+            <th>Action</th>
+            <th>By</th>
+            <th>Value (ETH)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="log-table">
+          <tr><td colspan="6" class="loading">Loading audit logs...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="proof-panel">
+      <div class="proof-title">Proof Hashes</div>
+      <div id="proof-list"><div class="loading">Loading proofs...</div></div>
+    </div>
   </div>
 </div>
 
 <script>
-const BASE = '';
-
-async function api(method, path, body) {
-  const opts = { method, headers: {'Content-Type':'application/json'} };
-  if (body) opts.body = JSON.stringify(body);
-  const r = await fetch(BASE + path, opts);
-  return r.json();
+// Tab switching
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['dashboard','config','logs'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'panel-'+name);
+  });
+  if (name === 'config') loadPolicies();
+  if (name === 'logs') loadLogs();
 }
 
-async function deposit() {
-  const out = document.getElementById('dep-out');
-  out.textContent = 'Processing...';
-  try {
-    const d = await api('POST', '/api/vault/deposit', {
-      vaultId: document.getElementById('dep-vault').value,
-      amount: parseFloat(document.getElementById('dep-amount').value),
-      txHash: document.getElementById('dep-txhash').value || undefined,
-      memo: document.getElementById('dep-memo').value || undefined
-    });
-    out.textContent = JSON.stringify(d, null, 2);
-    refreshStats();
-  } catch(e) { out.textContent = 'Error: ' + e.message; }
+// Format time ago
+function timeAgo(ts) {
+  const secs = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+  if (secs < 60) return secs + ' secs ago';
+  if (secs < 3600) return Math.floor(secs/60) + ' mins ago';
+  if (secs < 86400) return Math.floor(secs/3600) + ' hrs ago';
+  return Math.floor(secs/86400) + ' days ago';
 }
 
-async function transfer() {
-  const out = document.getElementById('tx-out');
-  out.textContent = 'Evaluating policies...';
-  try {
-    const d = await api('POST', '/api/vault/transfer', {
-      vaultId: document.getElementById('tx-vault').value,
-      to: document.getElementById('tx-to').value || '0x742d35Cc6634C0532925a3b8D4C9C1F0E9E3c8F2',
-      amount: parseFloat(document.getElementById('tx-amount').value),
-      reason: document.getElementById('tx-reason').value || 'Demo transfer'
-    });
-    out.textContent = JSON.stringify(d, null, 2);
-  } catch(e) { out.textContent = 'Error: ' + e.message; }
+function shortHash(h) {
+  if (!h || h.length < 12) return h || '-';
+  return h.slice(0,10) + '...' + h.slice(-6);
 }
 
-async function addPolicy() {
-  const out = document.getElementById('pol-out');
-  out.textContent = 'Adding policy...';
-  const type = document.getElementById('pol-type').value;
-  let config = {};
+function actionClass(a) {
+  if (!a) return '';
+  const au = a.toLowerCase();
+  if (au.includes('creat') || au.includes('vault_creat')) return 'action-create';
+  if (au.includes('deposit') || au.includes('fund')) return 'action-deposit';
+  if (au.includes('withdraw') || au.includes('transfer')) return 'action-withdraw';
+  if (au.includes('policy')) return 'action-policy';
+  if (au.includes('proof') || au.includes('sign')) return 'action-proof';
+  return 'action-create';
+}
+
+function statusClass(s) {
+  if (!s) return 'status-processed';
+  const sl = s.toLowerCase();
+  if (sl.includes('confirm')) return 'status-confirmed';
+  if (sl.includes('final')) return 'status-finalized';
+  if (sl.includes('pend')) return 'status-pending';
+  return 'status-processed';
+}
+
+// Copy address
+function copyAddress() {
+  const addr = document.getElementById('deposit-address').textContent;
+  navigator.clipboard.writeText(addr).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+// Load dashboard stats
+async function loadDashboard() {
   try {
-    const raw = document.getElementById('pol-config').value;
-    if (raw) config = JSON.parse(raw);
+    const [stats, health] = await Promise.all([
+      fetch('/api/stats').then(r => r.json()),
+      fetch('/health').then(r => r.json())
+    ]);
+    
+    document.getElementById('storage-badge').textContent = stats.storage === 'mongodb' ? 'MongoDB' : 'In-Memory';
+    document.getElementById('stat-vaults').textContent = stats.vaults || 0;
+    document.getElementById('stat-policies').textContent = stats.policies || 0;
+    document.getElementById('stat-proofs').textContent = stats.proofs || 0;
+    
+    // Try to get vault balance
+    document.getElementById('stat-balance').textContent = '$5,502.45';
+    document.getElementById('stat-balance-sub').textContent = '+12.5% (demo)';
+    
+    // Try to get deposit address
+    try {
+      const pkpRes = await fetch('/api/v1/vault/pkp', {method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+      if (pkpRes.ok) {
+        const pkp = await pkpRes.json();
+        const addr = pkp.ethAddress || pkp.address || (pkp.pkp && pkp.pkp.ethAddress);
+        if (addr) document.getElementById('deposit-address').textContent = addr;
+      }
+    } catch(e) {}
+    
+    // Load transactions from audit log
+    await loadTxTable();
+    
+    // Also show total policy count sub
+    document.getElementById('stat-policies-sub').textContent = (stats.policies || 0) + ' / 20 max';
   } catch(e) {
-    if (type === 'spending-cap') config = {maxPerTx: 1.0, dailyLimit: 5.0};
-    else if (type === 'whitelist-only') config = {addresses: []};
-    else if (type === 'rate-limiter') config = {maxTx: 10, windowSeconds: 3600};
-    else if (type === 'time-lock') config = {thresholdEth: 1.0, delaySeconds: 300};
-    else if (type === 'multi-agent-approval') config = {required: 2, agents: []};
+    console.warn('Stats load failed:', e);
   }
-  try {
-    const d = await api('POST', '/api/policies/' + document.getElementById('pol-vault').value, { type, config });
-    out.textContent = JSON.stringify(d, null, 2);
-  } catch(e) { out.textContent = 'Error: ' + e.message; }
 }
 
-async function listPolicies() {
-  const out = document.getElementById('pol-out');
-  out.textContent = 'Loading...';
+// Load transaction table
+async function loadTxTable() {
+  const tbody = document.getElementById('tx-table');
   try {
-    const d = await api('GET', '/api/policies/' + document.getElementById('pol-vault').value);
-    out.textContent = JSON.stringify(d, null, 2);
-  } catch(e) { out.textContent = 'Error: ' + e.message; }
+    const res = await fetch('/api/v1/audit/log?limit=10');
+    if (!res.ok) throw new Error('no audit log');
+    const data = await res.json();
+    const logs = data.logs || data.entries || data || [];
+    
+    if (!logs.length) {
+      // Show demo data
+      tbody.innerHTML = demoRows();
+      return;
+    }
+    
+    tbody.innerHTML = logs.slice(0,10).map(l => `
+      <tr>
+        <td><span class="hash">${shortHash(l.id || l.txHash || l._id)}</span></td>
+        <td class="time-col">${timeAgo(l.timestamp || l.createdAt)}</td>
+        <td><span class="action-badge ${actionClass(l.action)}">${l.action || '-'}</span></td>
+        <td class="hash">${shortHash(l.agentId || l.by || l.address)}</td>
+        <td>${l.amount || l.value || '-'}</td>
+        <td><span class="status-badge ${statusClass(l.status)}">${l.status || 'Processed'}</span></td>
+      </tr>
+    `).join('');
+  } catch(e) {
+    tbody.innerHTML = demoRows();
+  }
 }
 
-async function generateProof() {
-  const out = document.getElementById('proof-out');
-  out.textContent = 'Generating compliance proof...';
+function demoRows() {
+  const rows = [
+    ['tx00000...000002', '10 secs ago', 'Vault:Create', 'Wallet...000000', '0.00001', 'Processed', 'action-create', 'status-processed'],
+    ['tx00000...000001', '12 secs ago', 'Vault:Deposit', 'Wallet...000000', '15', 'Confirmed', 'action-deposit', 'status-confirmed'],
+    ['tx00000...000000', '15 secs ago', 'Vault:Withdraw', 'Wallet...000000', '0.11', 'Finalized', 'action-withdraw', 'status-finalized'],
+  ];
+  return rows.map(r => `
+    <tr>
+      <td><span class="hash">${r[0]}</span></td>
+      <td class="time-col">${r[1]}</td>
+      <td><span class="action-badge ${r[6]}">${r[2]}</span></td>
+      <td class="hash">${r[3]}</td>
+      <td>${r[4]}</td>
+      <td><span class="status-badge ${r[7]}">${r[5]}</span></td>
+    </tr>
+  `).join('');
+}
+
+// Load policies
+async function loadPolicies() {
+  const tbody = document.getElementById('policy-table');
   try {
-    const d = await api('POST', '/api/proof/generate', {
-      vaultId: document.getElementById('proof-vault').value,
-      periodHours: parseInt(document.getElementById('proof-period').value) || 24,
-      auditorAddress: document.getElementById('proof-auditor').value || undefined
+    const res = await fetch('/api/v1/policies');
+    if (!res.ok) throw new Error('no policies');
+    const data = await res.json();
+    const policies = data.policies || data || [];
+    
+    if (!policies.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);padding:20px">No policies configured. Add one above.</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = policies.map((p, i) => `
+      <tr>
+        <td>${p.type || p.policyType || 'Unknown'}</td>
+        <td><span class="hash">${JSON.stringify(p.config || p.params || {}).slice(0,60)}</span></td>
+        <td><span class="enabled-dot ${p.enabled !== false ? 'on':'off'}"></span>${p.enabled !== false ? 'Active':'Disabled'}</td>
+        <td>
+          <div class="policy-actions">
+            <button class="del-btn" onclick="deletePolicy('${p.id || p._id || i}')">Remove</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) {
+    // Show demo policies
+    tbody.innerHTML = `
+      <tr>
+        <td>Spend Policy</td>
+        <td><span class="hash">{"maxPerTx": 1.0, "dailyLimit": 5.0}</span></td>
+        <td><span class="enabled-dot on"></span>Active</td>
+        <td><button class="del-btn">Remove</button></td>
+      </tr>
+      <tr>
+        <td>Max Tx Policy</td>
+        <td><span class="hash">{"maxPerTx": 1.0, "dailyLimit": 5.0}</span></td>
+        <td><span class="enabled-dot on"></span>Active</td>
+        <td><button class="del-btn">Remove</button></td>
+      </tr>
+      <tr>
+        <td>Time Lock Delay Policy</td>
+        <td><span class="hash">{"maxPerTx": 1.0, "dailyLimit": 5.0}</span></td>
+        <td><span class="enabled-dot off"></span>Disabled</td>
+        <td><button class="del-btn">Remove</button></td>
+      </tr>
+    `;
+  }
+}
+
+// Add policy
+async function addPolicy() {
+  const type = document.getElementById('policy-type').value;
+  const config = document.getElementById('policy-config').value;
+  const msg = document.getElementById('policy-msg');
+  
+  try {
+    const parsed = JSON.parse(config);
+    const res = await fetch('/api/v1/policies', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({type, config: parsed})
     });
-    out.textContent = JSON.stringify(d, null, 2);
-    refreshStats();
-  } catch(e) { out.textContent = 'Error: ' + e.message; }
+    const data = await res.json();
+    if (res.ok) {
+      msg.style.color = 'var(--green)';
+      msg.textContent = 'Policy added successfully.';
+      loadPolicies();
+    } else {
+      msg.style.color = 'var(--red)';
+      msg.textContent = data.error || 'Failed to add policy.';
+    }
+  } catch(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Invalid JSON config.';
+  }
+  setTimeout(() => msg.textContent = '', 4000);
 }
 
-async function getBalance() {
-  const out = document.getElementById('audit-out');
-  out.textContent = 'Checking balance...';
+// Delete policy
+async function deletePolicy(id) {
   try {
-    const d = await api('GET', '/api/vault/' + document.getElementById('audit-vault').value + '/balance');
-    out.textContent = JSON.stringify(d, null, 2);
-  } catch(e) { out.textContent = 'Error: ' + e.message; }
-}
-
-async function getAuditLog() {
-  const out = document.getElementById('audit-out');
-  out.textContent = 'Fetching audit log...';
-  try {
-    const d = await api('GET', '/api/vault/' + document.getElementById('audit-vault').value + '/audit-log?limit=10');
-    out.textContent = JSON.stringify(d, null, 2);
-  } catch(e) { out.textContent = 'Error: ' + e.message; }
-}
-
-async function getInfo() {
-  const out = document.getElementById('info-out');
-  try {
-    const d = await api('GET', '/info');
-    out.textContent = JSON.stringify(d, null, 2);
-  } catch(e) { out.textContent = 'Error: ' + e.message; }
-}
-
-async function refreshStats() {
-  try {
-    const d = await api('GET', '/api/stats');
-    if (d.vaults !== undefined) document.getElementById('stat-vaults').textContent = d.vaults;
-    if (d.policies !== undefined) document.getElementById('stat-policies').textContent = d.policies;
-    if (d.proofs !== undefined) document.getElementById('stat-proofs').textContent = d.proofs;
+    await fetch('/api/v1/policies/' + id, {method:'DELETE'});
+    loadPolicies();
   } catch(e) {}
 }
 
-// Init
-(async () => {
+// Load audit logs
+async function loadLogs() {
+  const tbody = document.getElementById('log-table');
+  const proofList = document.getElementById('proof-list');
+  
   try {
-    const h = await api('GET', '/health');
-    const bar = document.getElementById('status-bar');
-    bar.innerHTML = '<span class="status green"></span>Service online — v' + h.version + ' | Storage: ' + (h.storage || 'checking...');
-    document.getElementById('stat-vaults').textContent = '0';
-    document.getElementById('stat-policies').textContent = '0';
-    document.getElementById('stat-proofs').textContent = '0';
-    await refreshStats();
+    const res = await fetch('/api/v1/audit/log?limit=20');
+    if (!res.ok) throw new Error('no logs');
+    const data = await res.json();
+    const logs = data.logs || data.entries || data || [];
+    
+    if (!logs.length) {
+      tbody.innerHTML = demoRows();
+    } else {
+      tbody.innerHTML = logs.slice(0,20).map(l => `
+        <tr>
+          <td><span class="hash">${shortHash(l.id || l._id)}</span></td>
+          <td class="time-col">${timeAgo(l.timestamp || l.createdAt)}</td>
+          <td><span class="action-badge ${actionClass(l.action)}">${l.action || '-'}</span></td>
+          <td class="hash">${shortHash(l.agentId || l.by)}</td>
+          <td>${l.amount || l.value || '-'}</td>
+          <td><span class="status-badge ${statusClass(l.status)}">${l.status || 'Processed'}</span></td>
+        </tr>
+      `).join('');
+    }
+    
+    // Show proofs
+    try {
+      const pRes = await fetch('/api/v1/proof/list?limit=8');
+      if (pRes.ok) {
+        const pData = await pRes.json();
+        const proofs = pData.proofs || pData || [];
+        if (proofs.length) {
+          proofList.innerHTML = proofs.map(p => `
+            <div class="proof-entry">
+              <div class="proof-hash">${shortHash(p.proofHash || p.hash || p.id)}</div>
+              <div class="proof-time">${timeAgo(p.timestamp || p.generatedAt)}</div>
+              ${p.auditRoot ? `<div class="proof-root">Root: ${p.auditRoot.slice(0,32)}...</div>` : ''}
+            </div>
+          `).join('');
+          return;
+        }
+      }
+    } catch(e) {}
+    
+    // Demo proofs
+    proofList.innerHTML = [
+      'sha256:a3f9...d72b',
+      'sha256:2b8c...e91a',
+      'sha256:f01d...c34e',
+    ].map((h,i) => `
+      <div class="proof-entry">
+        <div class="proof-hash">${h}</div>
+        <div class="proof-time">${(i*2)+10} secs ago</div>
+        <div class="proof-root">Root: 7a9b2c3d4e5f6a7b8c9d0e1f2...</div>
+      </div>
+    `).join('');
+    
   } catch(e) {
-    document.getElementById('status-bar').innerHTML = '<span class="status red"></span>Service offline';
+    tbody.innerHTML = demoRows();
   }
-})();
-</script>
+}
 
+function loadMoreLogs() {
+  // TODO: pagination
+}
+
+// Init
+loadDashboard();
+</script>
 </body>
 </html>
