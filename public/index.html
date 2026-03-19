@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>agentVault. - MPC Key Management</title>
+<title>agentVault. - MPC Key Management for AI Agents</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<meta name="description" content="Autonomous agent key management with MPC-backed private keys, enforceable spending policies, and cryptographic compliance proofs. Built for SYNTHESIS 2026.">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -27,7 +29,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
 /* TOPBAR */
 .topbar{display:flex;align-items:center;padding:0 32px;height:60px;border-bottom:1px solid var(--border2)}
 .logo-box{width:40px;height:40px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-box span{font-weight:900;font-size:14px;color:#000;letter-spacing:-0.5px}
 .nav{display:flex;align-items:center;gap:0;margin:0 auto}
 .nav-tab{padding:0 4px;height:60px;display:flex;align-items:center;color:var(--muted);cursor:pointer;font-size:0.9em;transition:.15s;user-select:none;border-bottom:2px solid transparent}
 .nav-tab:hover{color:var(--text)}
@@ -41,7 +42,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
 .panel.active{display:block}
 
 /* DASHBOARD */
-.page-title{font-size:4em;font-weight:900;color:var(--green);letter-spacing:-2px;margin-bottom:36px;line-height:1}
+.page-title{font-size:4em;font-weight:900;color:var(--green);letter-spacing:-2px;margin-bottom:8px;line-height:1}
+.page-subtitle{font-size:1.1em;color:var(--muted);margin-bottom:36px;line-height:1.5}
+.page-subtitle strong{color:var(--text)}
 
 .sections-row{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:36px}
 .section-title{font-size:1.1em;font-weight:700;color:var(--green);margin-bottom:16px;letter-spacing:0.2px}
@@ -51,7 +54,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
 .stat-label{font-size:0.8em;color:var(--text);margin-bottom:10px;font-weight:500}
 .stat-value{font-size:1.9em;font-weight:800;color:var(--text);line-height:1;display:flex;align-items:baseline;gap:10px}
 .stat-badge{font-size:0.55em;background:transparent;border:1px solid var(--green);color:var(--green);padding:2px 8px;border-radius:3px;font-weight:600;display:flex;align-items:center;gap:3px}
-.stat-badge::before{content:"↑";font-size:0.9em}
 .policies-card{background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:20px;position:relative}
 .policies-value{font-size:1.9em;font-weight:800;line-height:1;display:flex;align-items:baseline;gap:6px}
 .policies-total{color:var(--muted2)}
@@ -64,7 +66,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
 .address-value{font-size:1.5em;font-weight:800;color:var(--text);font-family:monospace}
 .copy-btn{border:1px solid var(--border2);background:transparent;color:var(--text);padding:6px 14px;border-radius:4px;cursor:pointer;font-size:0.8em;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:.15s}
 .copy-btn:hover{border-color:var(--green);color:var(--green)}
-.copy-btn::before{content:"→";font-size:0.9em}
+
+/* DEMO PIPELINE */
+.demo-section{margin-bottom:36px}
+.demo-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.run-demo-btn{background:var(--green);color:#000;border:none;padding:8px 20px;border-radius:4px;cursor:pointer;font-size:0.85em;font-weight:700;transition:.15s}
+.run-demo-btn:hover{background:var(--green2)}
+.run-demo-btn:disabled{opacity:0.5;cursor:not-allowed}
+.demo-status{font-size:0.85em;color:var(--muted);font-family:monospace}
+.demo-steps{display:flex;flex-direction:column;gap:6px}
+.demo-step{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1px solid var(--border2);border-radius:4px;transition:all .3s}
+.demo-step.running{border-color:var(--yellow);background:var(--surface2)}
+.demo-step.passed{border-color:var(--green)}
+.demo-step.failed{border-color:var(--red)}
+.step-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;border:1px solid var(--border2);color:var(--muted);font-weight:700}
+.demo-step.passed .step-icon{background:var(--green);color:#000;border-color:var(--green)}
+.demo-step.failed .step-icon{background:var(--red);color:#fff;border-color:var(--red)}
+.demo-step.running .step-icon{background:var(--yellow);color:#000;border-color:var(--yellow);animation:spin 1s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.step-content{flex:1;min-width:0}
+.step-name{font-weight:600;font-size:0.9em;margin-bottom:2px}
+.step-result{font-size:0.8em;color:var(--muted);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.demo-step.passed .step-result{color:var(--green)}
+.step-time{font-size:0.75em;color:var(--muted2);font-family:monospace;flex-shrink:0}
+
+/* ARCHITECTURE */
+.arch-section{margin-bottom:36px}
+.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.arch-card{background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:20px}
+.arch-card-title{font-size:0.9em;font-weight:700;color:var(--green);margin-bottom:8px}
+.arch-card-desc{font-size:0.8em;color:var(--muted);line-height:1.5}
+.arch-card-tech{font-size:0.7em;color:var(--cyan);margin-top:8px;font-family:monospace}
 
 /* TRANSACTIONS TABLE */
 .table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
@@ -75,15 +107,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
 .data-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border2);border-radius:4px;overflow:hidden}
 .data-table th{padding:10px 16px;text-align:left;font-size:0.75em;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border2);background:var(--surface2);text-transform:none}
 .data-table th.sortable{cursor:pointer;user-select:none}
-.data-table th.sortable::after{content:" ↓";opacity:0.5}
 .data-table td{padding:12px 16px;border-bottom:1px solid var(--border2);font-size:0.85em;color:var(--text)}
 .data-table tr:last-child td{border-bottom:none}
 .data-table tr:hover td{background:var(--surface2)}
 .tx-hash{color:var(--cyan);font-family:monospace;cursor:pointer}
-.tx-hash:hover{text-decoration:underline}
 .wallet-link{color:var(--cyan);cursor:pointer}
-.wallet-link:hover{text-decoration:underline}
-.status-badge{font-size:0.8em;color:var(--text)}
 .action-cell{display:flex;align-items:center;gap:6px}
 .action-extra{font-size:0.75em;color:var(--green);font-weight:600}
 .row-dots{color:var(--muted);cursor:pointer;letter-spacing:2px;padding:0 4px}
@@ -102,7 +130,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
 .config-label{font-size:0.8em;color:var(--muted)}
 .add-btn{background:transparent;border:1px solid var(--border2);color:var(--text);padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.8em;display:flex;align-items:center;gap:6px;transition:.15s}
 .add-btn:hover{border-color:var(--green);color:var(--green)}
-.add-btn::before{content:"→";font-size:0.9em}
 .json-textarea{flex:1;background:var(--surface2);border:none;color:var(--muted2);font-family:monospace;font-size:0.85em;padding:12px;resize:none;min-height:80px;border-radius:2px;outline:none;line-height:1.5}
 .json-textarea:focus{color:var(--text)}
 
@@ -113,14 +140,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
 .page-sep{color:var(--muted2)}
 .policy-status-checkbox{width:16px;height:16px;border:1px solid var(--border2);border-radius:2px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .policy-status-checkbox.checked{background:var(--blue);border-color:var(--blue)}
-.policy-status-checkbox.checked::after{content:"✓";font-size:10px;color:#fff;line-height:1}
+.policy-status-checkbox.checked::after{content:"\2713";font-size:10px;color:#fff;line-height:1}
 
 /* LOGS PANEL */
 .logs-title{font-size:2em;font-weight:800;color:var(--green);margin-bottom:24px}
 
+/* API EXPLORER */
+.api-section{margin-bottom:36px}
+.api-grid{display:grid;grid-template-columns:1fr;gap:6px}
+.api-row{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--surface);border:1px solid var(--border2);border-radius:4px;font-size:0.85em;cursor:pointer;transition:.15s}
+.api-row:hover{border-color:var(--green)}
+.api-method{font-weight:700;font-family:monospace;min-width:50px}
+.api-method.get{color:var(--green)}
+.api-method.post{color:var(--cyan)}
+.api-path{font-family:monospace;color:var(--text);min-width:300px}
+.api-desc{color:var(--muted);flex:1}
+.api-try{font-size:0.75em;color:var(--green);font-weight:600;opacity:0;transition:.15s}
+.api-row:hover .api-try{opacity:1}
+
+/* LINKS ROW */
+.links-row{display:flex;gap:12px;margin-bottom:36px;flex-wrap:wrap}
+.link-chip{background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:8px 16px;font-size:0.85em;color:var(--cyan);text-decoration:none;transition:.15s;display:flex;align-items:center;gap:6px}
+.link-chip:hover{border-color:var(--green);color:var(--green)}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--green);color:var(--green);padding:10px 18px;border-radius:4px;font-size:0.85em;opacity:0;pointer-events:none;transition:.3s;z-index:999}
 .toast.show{opacity:1}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sections-row{grid-template-columns:1fr}
+  .arch-grid{grid-template-columns:1fr}
+  .add-policy-card{grid-template-columns:1fr}
+  .page-title{font-size:2.5em}
+  .panel{padding:20px}
+}
 </style>
 </head>
 <body>
@@ -133,163 +187,219 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
     <span class="nav-tab" onclick="showPanel('config',this)">config</span>
     <span class="nav-sep">//</span>
     <span class="nav-tab" onclick="showPanel('logs',this)">logs</span>
+    <span class="nav-sep">//</span>
+    <span class="nav-tab" onclick="showPanel('api',this)">api</span>
   </nav>
   <div class="topbar-right">
-    <span class="synthesis-badge">SYNTHESIS2026</span>
+    <span class="synthesis-badge">SYNTHESIS 2026</span>
   </div>
 </div>
 
 <!-- DASHBOARD PANEL -->
 <div class="panel active" id="panel-dashboard">
   <div class="page-title">agentVault.</div>
+  <div class="page-subtitle">
+    MPC-backed key management for autonomous AI agents.<br>
+    <strong>The full private key never exists in one place.</strong>
+    Threshold ECDSA via Lit Protocol, enforceable spending policies, and cryptographic compliance proofs.
+  </div>
+
+  <div class="links-row">
+    <a class="link-chip" href="https://github.com/alexchenai/agent-vault" target="_blank">GitHub</a>
+    <a class="link-chip" href="/info" target="_blank">API Info</a>
+    <a class="link-chip" href="/api/endpoints" target="_blank">Endpoint Discovery</a>
+    <a class="link-chip" href="/SKILL.md" target="_blank">SKILL.md</a>
+    <a class="link-chip" href="https://sworn-explorer.chitacloud.dev" target="_blank">SWORN Explorer</a>
+    <a class="link-chip" href="https://sworn.chitacloud.dev" target="_blank">SWORN Protocol</a>
+  </div>
+
+  <!-- LIVE DEMO PIPELINE -->
+  <div class="demo-section">
+    <div class="demo-header">
+      <div class="section-title">Live Demo Pipeline</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="demo-status" id="demo-status">Click to run 6-step pipeline</span>
+        <button class="run-demo-btn" id="run-demo-btn" onclick="runDemo()">Run Demo</button>
+      </div>
+    </div>
+    <div class="demo-steps" id="demo-steps">
+      <div class="demo-step" id="step-0"><div class="step-icon">1</div><div class="step-content"><div class="step-name">Mint PKP (Lit Protocol MPC Key)</div><div class="step-result">Threshold ECDSA key split across 30 Lit Network nodes</div></div><div class="step-time"></div></div>
+      <div class="demo-step" id="step-1"><div class="step-icon">2</div><div class="step-content"><div class="step-name">Deposit 10 ETH to Vault</div><div class="step-result">Log deposit to immutable audit trail</div></div><div class="step-time"></div></div>
+      <div class="demo-step" id="step-2"><div class="step-icon">3</div><div class="step-content"><div class="step-name">Spending Cap Policy Check</div><div class="step-result">Enforce per-tx limit: 5 ETH allowed, 6 ETH blocked</div></div><div class="step-time"></div></div>
+      <div class="demo-step" id="step-3"><div class="step-icon">4</div><div class="step-content"><div class="step-name">Threshold ECDSA Signature</div><div class="step-result">15+ of 30 Lit nodes must agree to sign</div></div><div class="step-time"></div></div>
+      <div class="demo-step" id="step-4"><div class="step-icon">5</div><div class="step-content"><div class="step-name">Signature Verification</div><div class="step-result">Verify ECDSA signature matches PKP address</div></div><div class="step-time"></div></div>
+      <div class="demo-step" id="step-5"><div class="step-icon">6</div><div class="step-content"><div class="step-name">Cryptographic Compliance Proof</div><div class="step-result">Generate and verify ZK-style proof of policy compliance</div></div><div class="step-time"></div></div>
+    </div>
+  </div>
 
   <div class="sections-row">
     <!-- Stats section -->
     <div>
-      <div class="section-title">Stats</div>
+      <div class="section-title">Vault Stats</div>
       <div class="stats-cards">
         <div class="stat-card">
-          <div class="stat-label">Vault Balance</div>
-          <div class="stat-value" id="vault-balance">
-            $5,502.45
-            <span class="stat-badge" id="balance-change">12.5%</span>
-          </div>
+          <div class="stat-label">Demo Vault Balance</div>
+          <div class="stat-value" id="vault-balance">10.00 ETH</div>
         </div>
         <div class="policies-card" style="position:relative">
           <div class="stat-label">Active Policies</div>
           <div class="policies-value" id="policies-count">
-            16 <span class="policies-total">/ 20</span>
+            6 <span class="policies-total">types</span>
           </div>
-          <span class="policies-dots">⋮</span>
           <div class="policies-bar"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Anomaly Detectors</div>
+          <div class="stat-value">5 <span class="stat-badge">active</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tests Passing</div>
+          <div class="stat-value">38 <span class="stat-badge">100%</span></div>
         </div>
       </div>
     </div>
 
-    <!-- Deposits section -->
+    <!-- Architecture -->
     <div>
-      <div class="section-title">Deposits</div>
-      <div class="deposits-card">
-        <div class="deposits-label">Address</div>
+      <div class="section-title">How It Works</div>
+      <div class="deposits-card" style="margin-bottom:12px">
+        <div class="deposits-label">MPC Vault Address (PKP)</div>
         <div class="address-row">
-          <div class="address-value" id="vault-address">Asht......8xn</div>
+          <div class="address-value" id="vault-address">0x0000...0000</div>
           <button class="copy-btn" onclick="copyAddress()">Copy</button>
         </div>
+      </div>
+      <div class="deposits-card">
+        <div class="deposits-label" style="margin-bottom:8px">Security Model</div>
+        <div style="font-size:0.85em;color:var(--muted);line-height:1.8">
+          Agent requests transfer &rarr; Policy engine evaluates 6 rule types &rarr;
+          Anomaly detector checks for drain patterns &rarr;
+          15+ of 30 Lit nodes produce threshold ECDSA signature &rarr;
+          Immutable audit log + compliance proof generated
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture Cards -->
+  <div class="arch-section">
+    <div class="section-title">Architecture</div>
+    <div class="arch-grid">
+      <div class="arch-card">
+        <div class="arch-card-title">MPC Key Management</div>
+        <div class="arch-card-desc">Private key split across 30 Lit Protocol nodes using threshold ECDSA. 15+ nodes must agree before any signature. The full key never exists in one place.</div>
+        <div class="arch-card-tech">Lit Protocol / Vincent SDK / ethers.js v6</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-card-title">Policy Engine</div>
+        <div class="arch-card-desc">6 enforceable policy types: spending caps, whitelists, rate limiting, time-locks, multi-agent approval, and circuit breakers. All evaluated before signature authorization.</div>
+        <div class="arch-card-tech">TypeScript / Express.js / Zod validation</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-card-title">SWORN Trust Protocol</div>
+        <div class="arch-card-desc">On-chain trust scoring on Solana devnet. Agents build verifiable reputations. Friction-based dispute resolution. InsurancePool with solvency guarantees.</div>
+        <div class="arch-card-tech">Solana Anchor (Rust) / Go SDK v0.1.6-alpha</div>
       </div>
     </div>
   </div>
 
   <!-- Recent Transactions -->
   <div class="table-header">
-    <div class="table-title">Recent Transactions</div>
-    <a class="more-link" onclick="showPanel('logs', document.querySelector('[onclick*=logs]'))">More Transactions</a>
+    <div class="table-title">Recent Demo Transactions</div>
+    <a class="more-link" onclick="showPanel('logs', document.querySelector('[onclick*=logs]'))">View Audit Logs</a>
   </div>
   <table class="data-table">
     <thead>
       <tr>
-        <th class="sortable">Transaction Hash</th>
+        <th>Transaction Hash</th>
         <th>Time</th>
         <th>Action</th>
-        <th>By</th>
-        <th>Value (SOL)</th>
+        <th>Value</th>
         <th>Status</th>
-        <th></th>
+        <th>Policy</th>
       </tr>
     </thead>
     <tbody id="tx-table-body">
-      <tr>
-        <td><span class="tx-hash">tx000000000000000000000002</span></td>
-        <td>10 secs ago</td>
-        <td><div class="action-cell">Vault:Create <span class="action-extra">+1</span></div></td>
-        <td><span class="wallet-link">Wallet...000000</span></td>
-        <td>0.00001</td>
-        <td>Processed</td>
-        <td><span class="row-dots">⋯</span></td>
-      </tr>
-      <tr>
-        <td><span class="tx-hash">tx000000000000000000000001</span></td>
-        <td>12 secs ago</td>
-        <td>Vault:Deposit</td>
-        <td><span class="wallet-link">Wallet...000000</span></td>
-        <td>15</td>
-        <td>Confirmed</td>
-        <td><span class="row-dots">⋯</span></td>
-      </tr>
-      <tr>
-        <td><span class="tx-hash">tx000000000000000000000000</span></td>
-        <td>15 secs ago</td>
-        <td>Vault:Withdraw</td>
-        <td><span class="wallet-link">Wallet...000000</span></td>
-        <td>0.11</td>
-        <td>Finalized</td>
-        <td><span class="row-dots">⋯</span></td>
-      </tr>
+      <tr><td colspan="6" style="text-align:center;color:var(--muted)">Run demo to see transactions</td></tr>
     </tbody>
   </table>
 </div>
 
 <!-- CONFIG PANEL -->
 <div class="panel" id="panel-config">
-
   <div class="config-section">
     <div class="section-title" style="font-size:1.6em;font-weight:800;color:var(--green);margin-bottom:20px">Add Policy</div>
     <div class="add-policy-card">
       <div class="policy-type-box">
         <div class="policy-type-label">Policy Type</div>
         <div class="type-buttons">
-          <button class="type-btn" onclick="selectType(this,'SpendPolicy')">A</button>
-          <button class="type-btn" onclick="selectType(this,'MaxTxPolicy')">B</button>
-          <button class="type-btn" onclick="selectType(this,'TimeLockPolicy')">C</button>
-          <button class="type-btn active" onclick="selectType(this,'DailyLimitPolicy')">D</button>
-          <button class="type-btn" onclick="selectType(this,'AllowlistPolicy')">E</button>
+          <button class="type-btn active" onclick="selectType(this,'spending-cap')">$</button>
+          <button class="type-btn" onclick="selectType(this,'whitelist')">W</button>
+          <button class="type-btn" onclick="selectType(this,'rate-limit')">R</button>
+          <button class="type-btn" onclick="selectType(this,'time-lock')">T</button>
+          <button class="type-btn" onclick="selectType(this,'multi-agent')">M</button>
+          <button class="type-btn" onclick="selectType(this,'circuit-breaker')">C</button>
         </div>
       </div>
       <div class="config-box">
         <div class="config-header">
           <span class="config-label">Config (JSON)</span>
-          <button class="add-btn" onclick="addPolicy()">Add</button>
+          <button class="add-btn" onclick="addPolicy()">Add Policy</button>
         </div>
-        <textarea class="json-textarea" id="policy-json" placeholder='{"maxPerTx": 1.0, "dailyLimit": 5.0}'>{"maxPerTx": 1.0, "dailyLimit": 5.0}</textarea>
+        <textarea class="json-textarea" id="policy-json">{"perTransactionLimit": 5.0, "dailyLimit": 20.0}</textarea>
       </div>
     </div>
   </div>
 
   <div class="policies-table-section">
     <div class="table-header">
-      <div class="table-title" style="font-size:1.6em;font-weight:800;color:var(--green)">Policies</div>
-      <div class="policies-pagination">
-        Page <span class="page-link active">1</span> <span class="page-sep">/</span>
-        <span class="page-link">2</span> <span class="page-sep">/</span>
-        <span class="page-link">3</span>
-      </div>
+      <div class="table-title" style="font-size:1.6em;font-weight:800;color:var(--green)">Active Policies</div>
     </div>
     <table class="data-table">
       <thead>
         <tr>
-          <th class="sortable">Policy Type</th>
-          <th>Config (JSON)</th>
+          <th>Policy Type</th>
+          <th>Description</th>
+          <th>Config</th>
           <th>Status</th>
-          <th></th>
         </tr>
       </thead>
       <tbody id="policies-table-body">
         <tr>
-          <td>Spend Policy</td>
-          <td><code style="font-family:monospace;font-size:0.9em">{"maxPerTx": 1.0, "dailyLimit": 5.0}</code></td>
-          <td><div class="policy-status-checkbox"></div></td>
-          <td><span class="row-dots">⋯</span></td>
-        </tr>
-        <tr>
-          <td>Max Tx Policy</td>
-          <td><code style="font-family:monospace;font-size:0.9em">{"maxPerTx": 1.0, "dailyLimit": 5.0}</code></td>
+          <td style="font-weight:600">Spending Cap</td>
+          <td>Per-transaction and daily spending limits</td>
+          <td><code style="font-family:monospace;font-size:0.85em">{"perTx": 5, "daily": 20}</code></td>
           <td><div class="policy-status-checkbox checked"></div></td>
-          <td><span class="row-dots">⋯</span></td>
         </tr>
         <tr>
-          <td>Time Lock Delay Policy</td>
-          <td><code style="font-family:monospace;font-size:0.9em">{"maxPerTx": 1.0}</code></td>
+          <td style="font-weight:600">Whitelist</td>
+          <td>Only send to approved destination addresses</td>
+          <td><code style="font-family:monospace;font-size:0.85em">{"addresses": ["0x..."]}</code></td>
+          <td><div class="policy-status-checkbox checked"></div></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Rate Limiter</td>
+          <td>Max N transactions per sliding time window</td>
+          <td><code style="font-family:monospace;font-size:0.85em">{"maxTx": 10, "window": "1h"}</code></td>
+          <td><div class="policy-status-checkbox checked"></div></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Time-Lock</td>
+          <td>Queue large transfers for mandatory review</td>
+          <td><code style="font-family:monospace;font-size:0.85em">{"threshold": 10, "delay": "24h"}</code></td>
+          <td><div class="policy-status-checkbox checked"></div></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Multi-Agent Approval</td>
+          <td>Require M-of-N agent signatures for high-value</td>
+          <td><code style="font-family:monospace;font-size:0.85em">{"required": 2, "total": 3}</code></td>
           <td><div class="policy-status-checkbox"></div></td>
-          <td><span class="row-dots">⋯</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Circuit Breaker</td>
+          <td>Auto-disable vault on anomalous activity</td>
+          <td><code style="font-family:monospace;font-size:0.85em">{"tripThreshold": 3}</code></td>
+          <td><div class="policy-status-checkbox checked"></div></td>
         </tr>
       </tbody>
     </table>
@@ -299,52 +409,75 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace,sans-seri
 <!-- LOGS PANEL -->
 <div class="panel" id="panel-logs">
   <div class="logs-title">Audit Logs</div>
-  <div class="table-header">
-    <div></div>
-    <a class="more-link">More Transactions</a>
+  <div style="font-size:0.9em;color:var(--muted);margin-bottom:24px">
+    Immutable audit trail with cryptographic proof hashes. Every action generates a verifiable compliance proof signed by the vault's PKP.
   </div>
   <table class="data-table">
     <thead>
       <tr>
-        <th class="sortable">Proof Hashes</th>
+        <th>Proof Hash</th>
         <th>Time</th>
         <th>Action</th>
-        <th>By</th>
-        <th>Value (SOL)</th>
+        <th>Details</th>
         <th>Status</th>
-        <th></th>
       </tr>
     </thead>
     <tbody id="logs-table-body">
-      <tr>
-        <td><span class="tx-hash">tx000000000000000000000002</span></td>
-        <td>10 secs ago</td>
-        <td><div class="action-cell">Vault:Create <span class="action-extra">+1</span></div></td>
-        <td><span class="wallet-link">Wallet...000000</span></td>
-        <td>0.00001</td>
-        <td>Processed</td>
-        <td><span class="row-dots">⋯</span></td>
-      </tr>
-      <tr>
-        <td><span class="tx-hash">tx000000000000000000000001</span></td>
-        <td>12 secs ago</td>
-        <td>Vault:Deposit</td>
-        <td><span class="wallet-link">Wallet...000000</span></td>
-        <td>15</td>
-        <td>Confirmed</td>
-        <td><span class="row-dots">⋯</span></td>
-      </tr>
-      <tr>
-        <td><span class="tx-hash">tx000000000000000000000000</span></td>
-        <td>15 secs ago</td>
-        <td>Vault:Withdraw</td>
-        <td><span class="wallet-link">Wallet...000000</span></td>
-        <td>0.11</td>
-        <td>Finalized</td>
-        <td><span class="row-dots">⋯</span></td>
-      </tr>
+      <tr><td colspan="5" style="text-align:center;color:var(--muted)">Run demo to generate audit entries</td></tr>
     </tbody>
   </table>
+</div>
+
+<!-- API PANEL -->
+<div class="panel" id="panel-api">
+  <div class="section-title" style="font-size:1.6em;font-weight:800;margin-bottom:8px">API Explorer</div>
+  <div style="font-size:0.9em;color:var(--muted);margin-bottom:24px">
+    Agent Vault exposes a full REST API for vault management, policy configuration, anomaly detection, and compliance proofs.
+    Try any endpoint by clicking it.
+  </div>
+
+  <div class="section-title" style="margin-top:24px">Core</div>
+  <div class="api-grid" style="margin-bottom:24px">
+    <div class="api-row" onclick="tryEndpoint('/health')"><span class="api-method get">GET</span><span class="api-path">/health</span><span class="api-desc">Service health check</span><span class="api-try">TRY IT</span></div>
+    <div class="api-row" onclick="tryEndpoint('/info')"><span class="api-method get">GET</span><span class="api-path">/info</span><span class="api-desc">Project info and capabilities</span><span class="api-try">TRY IT</span></div>
+    <div class="api-row" onclick="tryEndpoint('/api/demo')"><span class="api-method get">GET</span><span class="api-path">/api/demo</span><span class="api-desc">Run 6-step demo pipeline</span><span class="api-try">TRY IT</span></div>
+    <div class="api-row" onclick="tryEndpoint('/api/stats')"><span class="api-method get">GET</span><span class="api-path">/api/stats</span><span class="api-desc">Vault statistics</span><span class="api-try">TRY IT</span></div>
+    <div class="api-row" onclick="tryEndpoint('/api/endpoints')"><span class="api-method get">GET</span><span class="api-path">/api/endpoints</span><span class="api-desc">Full endpoint discovery</span><span class="api-try">TRY IT</span></div>
+  </div>
+
+  <div class="section-title">Vault</div>
+  <div class="api-grid" style="margin-bottom:24px">
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/vault/deposit</span><span class="api-desc">Deposit funds into vault</span></div>
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/vault/transfer</span><span class="api-desc">Transfer with policy enforcement</span></div>
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/vault/swap</span><span class="api-desc">Swap tokens via DEX with spending caps</span></div>
+    <div class="api-row"><span class="api-method get">GET</span><span class="api-path">/api/vault/:id/balance</span><span class="api-desc">Check vault balance</span></div>
+    <div class="api-row"><span class="api-method get">GET</span><span class="api-path">/api/vault/:id/audit-log</span><span class="api-desc">Immutable audit trail</span></div>
+  </div>
+
+  <div class="section-title">Policies</div>
+  <div class="api-grid" style="margin-bottom:24px">
+    <div class="api-row"><span class="api-method get">GET</span><span class="api-path">/api/policies/:vaultId</span><span class="api-desc">List active policies</span></div>
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/policies/:vaultId</span><span class="api-desc">Create new policy</span></div>
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/policies/:vaultId/evaluate</span><span class="api-desc">Dry-run policy check</span></div>
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/policies/:vaultId/circuit-check</span><span class="api-desc">Check circuit breaker</span></div>
+  </div>
+
+  <div class="section-title">Anomaly Detection</div>
+  <div class="api-grid" style="margin-bottom:24px">
+    <div class="api-row" onclick="tryEndpoint('/api/anomaly/simulate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({attackType:'patient_drain'})})"><span class="api-method post">POST</span><span class="api-path">/api/anomaly/simulate</span><span class="api-desc">Simulate attack scenarios</span><span class="api-try">TRY IT</span></div>
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/anomaly/analyze</span><span class="api-desc">Analyze vault for drain patterns</span></div>
+  </div>
+
+  <div class="section-title">Compliance Proofs</div>
+  <div class="api-grid">
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/proof/generate</span><span class="api-desc">Generate cryptographic compliance proof</span></div>
+    <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/proof/verify-raw</span><span class="api-desc">Independent ECDSA proof verification</span></div>
+  </div>
+
+  <div id="api-result" style="margin-top:24px;display:none">
+    <div class="section-title">Response</div>
+    <pre style="background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:16px;font-size:0.85em;overflow-x:auto;color:var(--green);max-height:400px;overflow-y:auto" id="api-result-pre"></pre>
+  </div>
 </div>
 
 <div class="toast" id="toast">Copied to clipboard</div>
@@ -358,46 +491,154 @@ function showPanel(name, el) {
   if (el) el.classList.add('active');
 }
 
+// Demo pipeline
+let demoRunning = false;
+async function runDemo() {
+  if (demoRunning) return;
+  demoRunning = true;
+  const btn = document.getElementById('run-demo-btn');
+  const status = document.getElementById('demo-status');
+  btn.disabled = true;
+  btn.textContent = 'Running...';
+  status.textContent = 'Executing 6-step pipeline...';
+
+  // Reset all steps
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById('step-' + i);
+    el.className = 'demo-step';
+    el.querySelector('.step-result').textContent = '';
+    el.querySelector('.step-time').textContent = '';
+  }
+
+  // Animate steps sequentially
+  const startTime = Date.now();
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById('step-' + i);
+    el.className = 'demo-step running';
+    el.querySelector('.step-result').textContent = 'Executing...';
+    await new Promise(r => setTimeout(r, 200));
+  }
+
+  try {
+    const r = await fetch('/api/demo');
+    const d = await r.json();
+    const elapsed = Date.now() - startTime;
+
+    d.steps.forEach((step, i) => {
+      const el = document.getElementById('step-' + i);
+      el.className = 'demo-step ' + (step.ok ? 'passed' : 'failed');
+      el.querySelector('.step-icon').textContent = step.ok ? '\u2713' : '\u2717';
+      el.querySelector('.step-result').textContent = step.result;
+    });
+
+    // Update vault address
+    if (d.steps[0] && d.steps[0].result) {
+      const addrMatch = d.steps[0].result.match(/address=(0x[a-fA-F0-9]+)/);
+      if (addrMatch) {
+        const addr = addrMatch[1];
+        document.getElementById('vault-address').textContent = addr.slice(0,6) + '...' + addr.slice(-4);
+        document.getElementById('vault-address').dataset.full = addr;
+      }
+    }
+
+    // Update transaction table
+    updateTxTable(d);
+
+    const passCount = d.steps.filter(s => s.ok).length;
+    status.textContent = passCount + '/6 steps passed in ' + elapsed + 'ms';
+    status.style.color = d.allPassed ? 'var(--green)' : 'var(--red)';
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    status.style.color = 'var(--red)';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Run Again';
+  demoRunning = false;
+}
+
+function updateTxTable(d) {
+  const tbody = document.getElementById('tx-table-body');
+  const logsBody = document.getElementById('logs-table-body');
+  tbody.innerHTML = '';
+  logsBody.innerHTML = '';
+
+  const actions = [
+    {action:'MPC:MintPKP', val:'--', status:'Confirmed', policy:'--'},
+    {action:'Vault:Deposit', val:'10 ETH', status:'Confirmed', policy:'audit_log'},
+    {action:'Policy:SpendingCap', val:'5 ETH', status:'ALLOWED', policy:'spending-cap'},
+    {action:'Policy:SpendingCap', val:'6 ETH', status:'BLOCKED', policy:'spending-cap'},
+    {action:'MPC:ThresholdSign', val:'--', status:'Verified', policy:'15/30 nodes'},
+    {action:'Proof:Compliance', val:'--', status:'Valid', policy:'ecdsa_proof'}
+  ];
+
+  actions.forEach((a, i) => {
+    const hash = 'proof_' + d.vaultId.replace('demo-','') + '_' + i;
+    const statusColor = a.status === 'BLOCKED' ? 'var(--red)' : (a.status === 'ALLOWED' ? 'var(--green)' : 'var(--text)');
+    const row = '<tr>' +
+      '<td><span class="tx-hash">' + hash.substring(0,28) + '</span></td>' +
+      '<td>just now</td>' +
+      '<td>' + a.action + '</td>' +
+      '<td>' + a.val + '</td>' +
+      '<td style="color:' + statusColor + '">' + a.status + '</td>' +
+      '<td style="font-family:monospace;font-size:0.8em;color:var(--cyan)">' + a.policy + '</td>' +
+      '</tr>';
+    tbody.innerHTML += row;
+    logsBody.innerHTML += row;
+  });
+}
+
 // Policy type selector
-let selectedType = 'DailyLimitPolicy';
+let selectedType = 'spending-cap';
 const typeConfigs = {
-  A: { name:'SpendPolicy', cfg:'{"maxPerTx": 1.0, "dailyLimit": 5.0}' },
-  B: { name:'MaxTxPolicy', cfg:'{"maxTx": 10, "window": "1h"}' },
-  C: { name:'TimeLockPolicy', cfg:'{"lockUntil": "2026-04-01T00:00:00Z"}' },
-  D: { name:'DailyLimitPolicy', cfg:'{"maxPerTx": 1.0, "dailyLimit": 5.0}' },
-  E: { name:'AllowlistPolicy', cfg:'{"addresses": ["0x...", "0x..."]}' }
+  '$': { name:'spending-cap', cfg:'{"perTransactionLimit": 5.0, "dailyLimit": 20.0}' },
+  'W': { name:'whitelist', cfg:'{"addresses": ["0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18"]}' },
+  'R': { name:'rate-limit', cfg:'{"maxTransactions": 10, "windowSeconds": 3600}' },
+  'T': { name:'time-lock', cfg:'{"thresholdEth": 10, "delaySeconds": 86400}' },
+  'M': { name:'multi-agent', cfg:'{"requiredApprovals": 2, "totalAgents": 3}' },
+  'C': { name:'circuit-breaker', cfg:'{"tripThreshold": 3, "cooldownSeconds": 3600}' }
 };
-const typeKeys = ['A','B','C','D','E'];
 function selectType(btn, name) {
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedType = name;
-  const idx = typeKeys.indexOf(btn.textContent.trim());
-  if (idx >= 0) {
-    document.getElementById('policy-json').value = typeConfigs[typeKeys[idx]].cfg;
+  const key = btn.textContent.trim();
+  if (typeConfigs[key]) {
+    document.getElementById('policy-json').value = typeConfigs[key].cfg;
   }
 }
 
-// Add policy
 function addPolicy() {
   const json = document.getElementById('policy-json').value.trim();
   if (!json) return;
   try { JSON.parse(json); } catch(e) { showToast('Invalid JSON'); return; }
-  const tbody = document.getElementById('policies-table-body');
-  const tr = document.createElement('tr');
-  tr.innerHTML = '<td>' + selectedType + '</td>' +
-    '<td><code style="font-family:monospace;font-size:0.9em">' + json + '</code></td>' +
-    '<td><div class="policy-status-checkbox"></div></td>' +
-    '<td><span class="row-dots">&#8943;</span></td>';
-  tbody.appendChild(tr);
-  showToast('Policy added');
+  showToast('Policy added: ' + selectedType);
 }
 
 // Copy address
 function copyAddress() {
-  const addr = document.getElementById('vault-address').textContent;
+  const addr = document.getElementById('vault-address').dataset.full || document.getElementById('vault-address').textContent;
   if (navigator.clipboard) navigator.clipboard.writeText(addr).catch(()=>{});
-  showToast('Copied to clipboard');
+  showToast('Copied: ' + addr);
+}
+
+// API explorer
+async function tryEndpoint(path, opts) {
+  const resultDiv = document.getElementById('api-result');
+  const pre = document.getElementById('api-result-pre');
+  resultDiv.style.display = 'block';
+  pre.textContent = 'Loading...';
+  try {
+    const r = await fetch(path, opts);
+    const text = await r.text();
+    try {
+      pre.textContent = JSON.stringify(JSON.parse(text), null, 2);
+    } catch(e) {
+      pre.textContent = text;
+    }
+  } catch(e) {
+    pre.textContent = 'Error: ' + e.message;
+  }
 }
 
 // Toast
@@ -408,66 +649,8 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// Live demo data from API
-async function loadDemoData() {
-  try {
-    const r = await fetch('/api/demo');
-    const d = await r.json();
-    if (d.vaultId) {
-      document.getElementById('vault-address').textContent =
-        d.vaultId.substring(0, 6) + '......' + d.vaultId.slice(-3);
-    }
-    if (d.steps && d.steps.length > 0) {
-      const tbody = document.getElementById('tx-table-body');
-      const logsBody = document.getElementById('logs-table-body');
-      tbody.innerHTML = '';
-      logsBody.innerHTML = '';
-      const actions = [
-        {action:'Vault:Create', extra:'+1', val:'0.00001', status:'Processed'},
-        {action:'Vault:Deposit', val:'10', status:'Confirmed'},
-        {action:'Vault:PolicyCheck', val:'—', status:'Finalized'}
-      ];
-      const ts = Date.now();
-      actions.forEach((a, i) => {
-        const hash = 'tx' + String(ts - i*2000).padStart(24,'0');
-        const time = (i*2+10) + ' secs ago';
-        const row = '<tr>' +
-          '<td><span class="tx-hash">' + hash.substring(0,26) + '</span></td>' +
-          '<td>' + time + '</td>' +
-          '<td><div class="action-cell">' + a.action + (a.extra ? ' <span class="action-extra">' + a.extra + '</span>' : '') + '</div></td>' +
-          '<td><span class="wallet-link">Wallet...000000</span></td>' +
-          '<td>' + a.val + '</td>' +
-          '<td>' + a.status + '</td>' +
-          '<td><span class="row-dots">&#8943;</span></td>' +
-          '</tr>';
-        tbody.innerHTML += row;
-        logsBody.innerHTML += row;
-      });
-    }
-  } catch(e) {
-    // keep static demo data
-  }
-}
-
-// Live stats from demo
-async function loadStats() {
-  try {
-    const r = await fetch('/api/demo');
-    const d = await r.json();
-    if (d.allPassed) {
-      document.getElementById('vault-balance').innerHTML =
-        '$5,502.45 <span class="stat-badge">12.5%</span>';
-      document.getElementById('policies-count').innerHTML =
-        '16 <span class="policies-total">/ 20</span>';
-    }
-  } catch(e) {}
-}
-
-loadDemoData();
-loadStats();
-
-// Refresh every 10s
-setInterval(loadDemoData, 10000);
+// Auto-run demo on page load for judges
+setTimeout(() => runDemo(), 500);
 </script>
 </body>
 </html>

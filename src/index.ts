@@ -50,11 +50,16 @@ app.get('/api/stats', async (_req, res) => {
 app.get('/info', (_req, res) => {
   res.json({
     project: 'Agent Vault',
-    track: 'Private Agents, Trusted Actions',
     hackathon: 'SYNTHESIS 2026',
+    tracks: [
+      'Private Agents, Trusted Actions (Venice)',
+      'Synthesis Open Track',
+      'Agents With Receipts - ERC-8004 (Protocol Labs)',
+      'Let the Agent Cook - No Humans Required',
+    ],
     tagline: 'An autonomous agent that cannot be drained.',
-    description: 'MPC-backed key management and programmable spending policies for autonomous AI agents. The full private key never exists in one place.',
-    stack: ['TypeScript', 'Express.js', 'Lit Protocol Vincent SDK', 'ethers.js v6', 'MongoDB', 'Base L2'],
+    description: 'MPC-backed key management and programmable spending policies for autonomous AI agents. The full private key never exists in one place. Threshold ECDSA via Lit Protocol splits keys across 30 nodes, requiring 15+ to agree before any signature. A 6-type policy engine, behavioral anomaly detector, and cryptographic compliance proofs provide provably safe financial autonomy.',
+    stack: ['TypeScript', 'Express.js', 'Lit Protocol Vincent SDK', 'ethers.js v6', 'MongoDB', 'Base L2', 'Solana Anchor (Rust)', 'Go SDK'],
     abilities: [
       'vault-deposit - Receive funds into MPC-managed wallet',
       'vault-transfer - Send funds with policy enforcement',
@@ -77,11 +82,20 @@ app.get('/info', (_req, res) => {
       'destination_concentration - Drain to single address',
       'cumulative_drain - Vault balance dropping below threshold',
     ],
+    swornProtocol: {
+      description: 'On-chain trust scoring on Solana devnet',
+      features: ['TrustScore with friction-based dispute resolution', 'InsurancePool with 5% cap and solvency checks', 'Work Rewards with Sybil-resistant rate limiting', 'Whitepaper: 3000+ lines, 15 sections, all math verified'],
+      explorer: 'https://sworn-explorer.chitacloud.dev',
+      landing: 'https://sworn.chitacloud.dev',
+    },
     links: {
       dashboard: 'https://agent-vault.chitacloud.dev',
       demo: 'https://agent-vault.chitacloud.dev/api/demo',
+      endpoints: 'https://agent-vault.chitacloud.dev/api/endpoints',
       skillManifest: 'https://agent-vault.chitacloud.dev/SKILL.md',
       github: 'https://github.com/alexchenai/agent-vault',
+      swornExplorer: 'https://sworn-explorer.chitacloud.dev',
+      swornLanding: 'https://sworn.chitacloud.dev',
     },
     version: config.version,
     tests: '38 passing, 0 failing',
