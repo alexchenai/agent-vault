@@ -1,0 +1,77 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Agent Vault (SWORN Trust Protocol)",
+  "description": "Autonomous trust and escrow agent powered by the SWORN Trust Protocol. Provides on-chain trust scoring, escrow management with policy enforcement, and dispute resolution for agent-to-agent transactions. Supports MPC-protected private keys via Lit Protocol Vincent SDK and verifiable compliance proofs. Deployed on Solana (SWORN program) and Base Sepolia (AgentIdentityRegistry + AgentEscrow).",
+  "image": "https://sworn.chitacloud.dev/logo.png",
+  "active": true,
+  "x402Support": true,
+  "services": [
+    {
+      "name": "web",
+      "endpoint": "https://sworn.chitacloud.dev",
+      "version": "1.0.0"
+    },
+    {
+      "name": "A2A",
+      "endpoint": "https://sworn.chitacloud.dev/api/a2a",
+      "version": "1.0.0"
+    },
+    {
+      "name": "MCP",
+      "endpoint": "https://sworn.chitacloud.dev/api/mcp",
+      "version": "1.0.0"
+    }
+  ],
+  "registrations": [
+    {
+      "agentId": 1,
+      "agentRegistry": "eip155:84532:0x68b49797416c2402465F69f8F3235A7e1C720A3b"
+    }
+  ],
+  "supportedTrust": [
+    "reputation",
+    "crypto-economic"
+  ],
+  "capabilities": {
+    "trustScoring": {
+      "description": "SWORN TrustScore computation with decay, friction penalties, and Sybil resistance",
+      "program": "CSBAc1SiMALr4rnuCoB17BsddzthB4RAhjibGvyt6p6S",
+      "chain": "solana-devnet"
+    },
+    "escrow": {
+      "description": "Policy-enforced escrow with spending limits, approval thresholds, and automated release",
+      "contract": "0xf49C6d9f69A7C2Edc7977119888160F17141e823",
+      "chain": "eip155:84532"
+    },
+    "disputeResolution": {
+      "description": "On-chain dispute filing with friction costs, arbiter assignment, and evidence submission",
+      "program": "CSBAc1SiMALr4rnuCoB17BsddzthB4RAhjibGvyt6p6S",
+      "chain": "solana-devnet"
+    },
+    "insurancePool": {
+      "description": "5% premium insurance pool with solvency checks for covered escrow transactions",
+      "program": "CSBAc1SiMALr4rnuCoB17BsddzthB4RAhjibGvyt6p6S",
+      "chain": "solana-devnet"
+    }
+  },
+  "contracts": {
+    "solana": {
+      "network": "devnet",
+      "programId": "CSBAc1SiMALr4rnuCoB17BsddzthB4RAhjibGvyt6p6S",
+      "admin": "KXmzgFfvSkJUtZ8k6tJgQXZxzs1arADcLbCABvepeNf"
+    },
+    "baseSepolia": {
+      "chainId": 84532,
+      "agentIdentityRegistry": "0x68b49797416c2402465F69f8F3235A7e1C720A3b",
+      "agentEscrow": "0xf49C6d9f69A7C2Edc7977119888160F17141e823"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "repository": "https://github.com/alexchenai/agent-vault",
+    "hackathon": "SYNTHESIS 2026",
+    "track": "Agents With Receipts - ERC-8004 (Protocol Labs)",
+    "createdAt": "2026-03-19T09:00:00Z",
+    "updatedAt": "2026-03-19T09:00:00Z"
+  }
+}
