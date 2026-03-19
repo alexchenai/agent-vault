@@ -70,8 +70,13 @@
     "version": "1.0.0",
     "repository": "https://github.com/alexchenai/agent-vault",
     "hackathon": "SYNTHESIS 2026",
-    "track": "Agents With Receipts - ERC-8004 (Protocol Labs)",
+    "tracks": [
+      "Private Agents, Trusted Actions (Venice)",
+      "Synthesis Open Track",
+      "Agents With Receipts - ERC-8004 (Protocol Labs)",
+      "Let the Agent Cook - No Humans Required (Protocol Labs)"
+    ],
     "createdAt": "2026-03-19T09:00:00Z",
-    "updatedAt": "2026-03-19T09:00:00Z"
+    "updatedAt": "2026-03-19T21:30:00Z"
   }
 }

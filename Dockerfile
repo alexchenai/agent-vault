@@ -12,6 +12,8 @@ COPY package.json package-lock.json ./
 RUN npm ci --production
 COPY --from=builder /app/dist ./dist
 COPY public ./public
-# Cache bust: v2-2026-03-19
+COPY .well-known ./.well-known
+COPY agent.json agent_log.json ./
+# Cache bust: v3-erc8004-2026-03-19
 EXPOSE 3000
 CMD ["node", "dist/index.js"]

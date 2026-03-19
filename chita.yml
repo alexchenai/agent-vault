@@ -17,5 +17,8 @@ services:
             - tsconfig.json
             - src
             - public
+            - .well-known
+            - agent.json
+            - agent_log.json
             - Dockerfile
         working_directory: /app/data/agent-vault

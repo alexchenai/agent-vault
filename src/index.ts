@@ -15,9 +15,32 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend
-app.use(express.static(path.join(__dirname, '..', 'public')));
-app.use(express.static(path.join(process.cwd(), 'public')));
+// Serve static frontend (dotfiles enabled for .well-known)
+app.use(express.static(path.join(__dirname, '..', 'public'), { dotfiles: 'allow' }));
+app.use(express.static(path.join(process.cwd(), 'public'), { dotfiles: 'allow' }));
+
+// ERC-8004: Serve .well-known/agent-registration.json
+const rootDir = path.resolve(__dirname, '..');
+app.get('/.well-known/agent-registration.json', (_req, res) => {
+  res.type('application/json');
+  res.sendFile(path.join(rootDir, '.well-known', 'agent-registration.json'), (err) => {
+    if (err) res.status(404).json({ error: 'agent-registration.json not found' });
+  });
+});
+
+// ERC-8004: Serve agent.json and agent_log.json
+app.get('/agent.json', (_req, res) => {
+  res.type('application/json');
+  res.sendFile(path.join(rootDir, 'agent.json'), (err) => {
+    if (err) res.status(404).json({ error: 'agent.json not found' });
+  });
+});
+app.get('/agent_log.json', (_req, res) => {
+  res.type('application/json');
+  res.sendFile(path.join(rootDir, 'agent_log.json'), (err) => {
+    if (err) res.status(404).json({ error: 'agent_log.json not found' });
+  });
+});
 
 // Health
 app.get('/health', (_req, res) => {
