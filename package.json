@@ -1,6 +1,6 @@
 {
   "name": "agent-vault",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Autonomous agent with MPC-protected private keys, enforceable spending policies, and verifiable compliance proofs. Built with Lit Protocol Vincent SDK for SYNTHESIS hackathon.",
   "main": "dist/index.js",
   "scripts": {
