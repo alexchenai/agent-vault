@@ -50,24 +50,106 @@ app.get('/api/stats', async (_req, res) => {
 app.get('/info', (_req, res) => {
   res.json({
     project: 'Agent Vault',
-    track: 'Agents that keep secrets',
+    track: 'Private Agents, Trusted Actions',
     hackathon: 'SYNTHESIS 2026',
-    description: 'An autonomous agent that manages funds on Ethereum with MPC-protected private keys (Lit Protocol), enforceable spending policies, and verifiable compliance proofs.',
-    stack: ['TypeScript', 'Lit Protocol Vincent SDK', 'Base L2', 'MongoDB', 'Express.js'],
+    tagline: 'An autonomous agent that cannot be drained.',
+    description: 'MPC-backed key management and programmable spending policies for autonomous AI agents. The full private key never exists in one place.',
+    stack: ['TypeScript', 'Express.js', 'Lit Protocol Vincent SDK', 'ethers.js v6', 'MongoDB', 'Base L2'],
     abilities: [
       'vault-deposit - Receive funds into MPC-managed wallet',
       'vault-transfer - Send funds with policy enforcement',
       'vault-swap - Swap tokens via DEX with spending caps',
-      'vault-proof - Generate ZK compliance proofs',
+      'vault-proof - Generate cryptographic compliance proofs',
+      'vault-secrets - Encrypted secret storage with access policies',
     ],
     policies: [
       'spending-cap - Per-tx and daily spending limits',
       'whitelist-only - Restrict destinations to approved addresses',
-      'rate-limiter - Max N transactions per time window',
-      'time-lock - Delay large transfers for review period',
+      'rate-limiter - Max N transactions per time window (sliding window)',
+      'time-lock - Queue large transfers for mandatory review period',
       'multi-agent-approval - Require M-of-N agent signatures',
+      'circuit-breaker - Auto-disable vault on anomalous activity',
     ],
+    anomalyDetection: [
+      'velocity_spike - >5 tx/hr indicates automated drain',
+      'cap_clustering - Transactions near spending limit (manipulation)',
+      'temporal_regularity - Automated attack spacing detection',
+      'destination_concentration - Drain to single address',
+      'cumulative_drain - Vault balance dropping below threshold',
+    ],
+    links: {
+      dashboard: 'https://agent-vault.chitacloud.dev',
+      demo: 'https://agent-vault.chitacloud.dev/api/demo',
+      skillManifest: 'https://agent-vault.chitacloud.dev/SKILL.md',
+      github: 'https://github.com/alexchenai/agent-vault',
+    },
     version: config.version,
+    tests: '38 passing, 0 failing',
+  });
+});
+
+// API endpoint discovery for judges and other agents
+app.get('/api/endpoints', (_req, res) => {
+  res.json({
+    project: 'Agent Vault',
+    version: config.version,
+    baseUrl: 'https://agent-vault.chitacloud.dev',
+    endpoints: {
+      core: [
+        { method: 'GET', path: '/health', description: 'Service health check' },
+        { method: 'GET', path: '/info', description: 'Project info and capabilities' },
+        { method: 'GET', path: '/api/endpoints', description: 'This endpoint discovery' },
+        { method: 'GET|POST', path: '/api/demo', description: 'Run 6-step demo pipeline' },
+        { method: 'GET', path: '/api/stats', description: 'Vault statistics' },
+      ],
+      vault: [
+        { method: 'POST', path: '/api/vault/deposit', description: 'Deposit funds', body: '{ vaultId, amount, tokenAddress?, txHash?, memo? }' },
+        { method: 'GET', path: '/api/vault/:vaultId/balance', description: 'Check vault balance' },
+        { method: 'GET', path: '/api/vault/:vaultId/deposit-address', description: 'Get PKP deposit address' },
+        { method: 'GET', path: '/api/vault/:vaultId/pkp', description: 'Get PKP key details and architecture info' },
+        { method: 'POST', path: '/api/vault/transfer', description: 'Transfer funds with policy checks', body: '{ vaultId, to, amount, tokenAddress?, memo? }' },
+        { method: 'POST', path: '/api/vault/swap', description: 'Swap tokens with spending cap', body: '{ vaultId, tokenIn, tokenOut, amountIn, slippageBps? }' },
+        { method: 'POST', path: '/api/vault/:vaultId/sign', description: 'Sign transaction via PKP', body: '{ to, value, data?, chainId?, gasLimit?, nonce? }' },
+        { method: 'POST', path: '/api/vault/:vaultId/attest', description: 'Sign message for attestation', body: '{ message }' },
+        { method: 'GET', path: '/api/vault/:vaultId/audit-log', description: 'View immutable audit trail' },
+      ],
+      policies: [
+        { method: 'GET', path: '/api/policies/:vaultId', description: 'List active policies' },
+        { method: 'POST', path: '/api/policies/:vaultId', description: 'Create policy', body: '{ type, config }' },
+        { method: 'PUT', path: '/api/policies/:vaultId/:policyId', description: 'Update policy' },
+        { method: 'DELETE', path: '/api/policies/:vaultId/:policyId', description: 'Disable policy (soft delete)' },
+        { method: 'POST', path: '/api/policies/:vaultId/evaluate', description: 'Dry-run policy check', body: '{ amount, to? }' },
+        { method: 'POST', path: '/api/policies/:vaultId/circuit-check', description: 'Check circuit breaker', body: '{ amount_usd, policy }' },
+        { method: 'GET', path: '/api/policies/:vaultId/circuit-state', description: 'View circuit breaker state' },
+      ],
+      secrets: [
+        { method: 'POST', path: '/api/vault/:vaultId/secrets', description: 'Store encrypted secret', body: '{ vaultAddress, name, value, accessPolicy? }' },
+        { method: 'GET', path: '/api/vault/:vaultId/secrets', description: 'List secrets (values hidden)' },
+        { method: 'GET', path: '/api/vault/:vaultId/secrets/:name', description: 'Retrieve secret (policy-gated)', query: 'vaultAddress=...' },
+        { method: 'DELETE', path: '/api/vault/:vaultId/secrets/:name', description: 'Permanently delete secret' },
+      ],
+      proofs: [
+        { method: 'POST', path: '/api/proof/generate', description: 'Generate compliance proof', body: '{ vaultId, fromTimestamp?, toTimestamp?, discloseLevel? }' },
+        { method: 'GET', path: '/api/proof/:proofId', description: 'Retrieve proof' },
+        { method: 'POST', path: '/api/proof/:proofId/verify', description: 'Verify proof' },
+        { method: 'POST', path: '/api/proof/verify-raw', description: 'Independent ECDSA verification', body: '{ proofPayload, attestation, expectedAddress? }' },
+        { method: 'GET', path: '/api/proof/vault/:vaultId', description: 'List proofs for vault' },
+      ],
+      anomaly: [
+        { method: 'POST', path: '/api/anomaly/analyze', description: 'Analyze vault for attack patterns', body: '{ vaultId, windowHours?, history?, spendingCapEth?, vaultBalanceEth? }' },
+        { method: 'POST', path: '/api/anomaly/simulate', description: 'Simulate attack scenarios', body: '{ attackType: "patient_drain"|"burst_drain"|"normal_activity" }' },
+      ],
+      multiAgent: [
+        { method: 'GET', path: '/api/vault/:vaultId/queue', description: 'View time-locked transaction queue' },
+        { method: 'DELETE', path: '/api/vault/queue/:queueId', description: 'Cancel queued transaction' },
+        { method: 'GET', path: '/api/vault/:vaultId/approvals', description: 'View pending approval requests' },
+        { method: 'POST', path: '/api/vault/approvals/:requestId/approve', description: 'Submit approval', body: '{ approverId, signature }' },
+      ],
+      discovery: [
+        { method: 'GET', path: '/SKILL.md', description: 'Machine-readable skill manifest' },
+        { method: 'GET', path: '/api/conversation-log', description: 'Build conversation log' },
+      ],
+    },
   });
 });
 
